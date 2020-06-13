@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="CarRefuelTracker.UI.Views.DashboardEntryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CarRefuelTracker.UI.Views"
+             mc:Ignorable="d" 
+              d:DesignHeight="450" d:DesignWidth="800" Background="LightBlue">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Grid.Row="0">
+            <Label Content="Fahrzeug Einträge" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center" 
+                       FontSize="20"/>
+            <DataGrid Margin="5,0,5,0"
+                          ItemsSource="{Binding Path=CarEntrys}"
+                          AutoGenerateColumns="False" CanUserAddRows="False" CanUserResizeColumns="False" 
+                          CanUserResizeRows="False" SelectedItem="{Binding Path=SelectedEntryModel, Mode=TwoWay}" 
+                          SelectionMode="Single" CanUserSortColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header=" Datum " IsReadOnly="True" Binding="{Binding Entrydate}"/>
+                    <DataGridTextColumn Header=" Preis pro Liter in € " IsReadOnly="True" Binding="{Binding PricePerLiter}"/>
+                    <DataGridTextColumn Header=" Abgabemenge in Liter " IsReadOnly="True" Binding="{Binding AmountOffuel}"/>
+                    <DataGridTextColumn Header=" Gesasmtkosten in € " IsReadOnly="True" Binding="{Binding Totalamount}"/>
+                    <DataGridTextColumn Header=" Gefahrene Kiolometer " IsReadOnly="True" Binding="{Binding DrivenDistance}"/>
+                    <DataGridTextColumn Header=" Ø Verbrauch / 100km " IsReadOnly="True" Binding="{Binding ConsumptationPerHundredKilometer}"/>
+                    <DataGridTextColumn Header=" Ø Kosten / 100km" IsReadOnly="True" Binding="{Binding CostPerHundredKilometer}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Height="25" Content="Eintrag anlegen" Margin="10,5,0,5"/>
+            <Button Height="25" Content="Eintrag ändern" Margin="10,5,0,5"/>
+            <Button Height="25" Content="Eintrag löschen" Margin="10,5,0,5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

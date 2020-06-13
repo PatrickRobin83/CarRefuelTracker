@@ -1,0 +1,63 @@
+﻿<Window x:Class="CarRefuelTracker.UI.Views.DashboardView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CarRefuelTracker.UI.Views"
+        mc:Ignorable="d"
+        Title="CarRefuelTracker" Height="700" Width="1300">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="Auto"/>
+
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Orientation="Vertical">
+                <Label Content="Angelegte Fahrzeuge" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center" 
+                   FontSize="20"/>
+                <DataGrid Margin="5,0,5,0"
+                      ItemsSource="{Binding Path=AvailableCars}"
+                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserResizeColumns="False" 
+                      CanUserResizeRows="False" SelectedItem="{Binding Path=SelectedCarModel, Mode=TwoWay}"  
+                      SelectionMode="Single" CanUserSortColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header=" Marke " IsReadOnly="True" Binding="{Binding Brand}"/>
+                        <DataGridTextColumn Header=" Model " IsReadOnly="True" Binding="{Binding ModelType}"/>
+                        <DataGridTextColumn Header=" Treibstoffart " IsReadOnly="True" Binding="{Binding FuelType}"/>
+                        <DataGridCheckBoxColumn Header="Ist Aktiv" IsReadOnly="True"  Binding="{Binding IsActive}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+            <StackPanel x:Name="SelectedEntryViewModelIsVisible" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3 " >
+                <ContentControl x:Name="SelectedEntryViewModel" Margin="0,10,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+                <Button x:Name="CreateNewCar" Height="25" Content="Fahrzeug anlegen" Margin="10,35,0,0"/>
+                <Button x:Name="EditCar" Height="25" Content="Fahrzeug ändern" Margin="10,5,0,0"/>
+                <Button x:Name="DeleteCar" Height="25" Content="Fahrzeug löschen" Margin="10,5,0,0" />
+            </StackPanel>
+            <StackPanel Margin="10,10,10,0" x:Name="SelectedCreateCarViewModelIsVisible" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3">
+                <ContentControl x:Name="CarDetailsViewModel" Margin="5,5,0,0"/>
+            </StackPanel>
+            <ContentControl Grid.Row="3" Grid.Column="3"/>
+        </Grid>
+        <Button x:Name="Exit" Width="100" Height="25" Background="DarkRed" Foreground="AliceBlue" Content="Beenden" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10"></Button>
+    </Grid>
+</Window>
