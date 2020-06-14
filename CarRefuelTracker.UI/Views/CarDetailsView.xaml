@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <StackPanel Orientation="Vertical" Width="400" HorizontalAlignment="Left">
+            <StackPanel Orientation="Vertical" Width="480" HorizontalAlignment="Left">
 
                 <StackPanel Orientation="Horizontal">
                     <Label FontSize="14" Width="110" Content="Fahrzeug Id: "/>
@@ -35,8 +35,10 @@
                               SelectedValuePath="Id" DisplayMemberPath="BrandName" IsSynchronizedWithCurrentItem="True"
                               VerticalAlignment="Center" Width="140"/>
 
-                    <Button x:Name="AddBrand" Margin="5,0,0,0" Width="130" 
-                            Content="Marke hinzufügen" VerticalAlignment="Center"/>
+                    <Button x:Name="AddBrand" Margin="5,0,0,0" Width="80" 
+                            Content="Marke +" VerticalAlignment="Center"/>
+                    <Button x:Name="RemoveBrand" Margin="5,0,0,0" Width="80" 
+                            Content="Marke -" VerticalAlignment="Center"/>
 
                 </StackPanel>
 
@@ -49,7 +51,10 @@
                               SelectedValuePath="Id" DisplayMemberPath="ModelName" IsSynchronizedWithCurrentItem="True"
                               VerticalAlignment="Center" Width="140"/>
 
-                    <Button x:Name="AddModelType" Margin="5,0,0,0" Width="130" Content="Model hinzufügen" VerticalAlignment="Center" />
+                    <Button x:Name="AddModelType" Margin="5,0,0,0" Width="80" 
+                            Content="Model +" VerticalAlignment="Center" />
+                    <Button x:Name="RemoveModelType" Margin="5,0,0,0" Width="80" 
+                            Content="Model -" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
 
@@ -61,9 +66,10 @@
                               SelectedValuePath="Id" DisplayMemberPath="TypeOfFuel" IsSynchronizedWithCurrentItem="True"
                               Width="140"/>
 
-                    <Button x:Name="AddFuelType" Margin="5,0,0,0" Width="130" 
-                            Content="Kraftstoffart hinzufügen" VerticalAlignment="Center" />
-
+                    <Button x:Name="AddFuelType" Margin="5,0,0,0" Width="80" 
+                            Content="Kraftstoff +" VerticalAlignment="Center" />
+                    <Button x:Name="RemoveFuelType" Margin="5,0,0,0" Width="80" 
+                            Content="Kraftstoff -" VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical" Width="245">

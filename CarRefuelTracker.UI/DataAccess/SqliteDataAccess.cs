@@ -15,6 +15,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using Caliburn.Micro;
 using CarRefuelTracker.UI.Models;
 using Dapper;
 
@@ -87,15 +88,6 @@ namespace CarRefuelTracker.UI.DataAccess
                 throw new NotImplementedException("Not implemented Yet");
             }
         }
-        public static List<BrandModel> LoadAllBrands()
-        {
-            List<BrandModel> allBrands = new List<BrandModel>();
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                allBrands = cnn.Query<BrandModel>("SELECT * FROM Brand").ToList();
-                return allBrands;
-            }
-        }
         public static List<ModelTypeModel> ModelsFromBrands(int brandId)
         {
             List<ModelTypeModel> carModels = new List<ModelTypeModel>();
@@ -109,7 +101,15 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region Brand Operations
-
+        public static List<BrandModel> LoadAllBrands()
+        {
+            List<BrandModel> allBrands = new List<BrandModel>();
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                allBrands = cnn.Query<BrandModel>("SELECT * FROM Brand").ToList();
+                return allBrands;
+            }
+        }
         public static BrandModel AddBrand(BrandModel brand)
         {
             
@@ -123,6 +123,32 @@ namespace CarRefuelTracker.UI.DataAccess
                     brand.Id = cnn.Query<int>(@"INSERT INTO Brand (brandname) VALUES (@BrandName); SELECT last_insert_rowid()", brand).First();
                 }
                 return brand;
+            }
+        }
+
+        public static void RemoveBrandFromDataBase(BrandModel brand)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Query($"DELETE FROM Brand WHERE id = {brand.Id}");
+                List<ModelTypeModel> modelTypes = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE brandId = {brand.Id} ").ToList();
+                List<CarModel> carModels = cnn.Query<CarModel>($"SELECT * FROM Car WHERE brandId = {brand.Id}").ToList();
+
+                if (carModels != null && carModels.Count > 0)
+                {
+                    foreach (CarModel carModel in carModels)
+                    {
+                        cnn.Query($"DELETE FROM Car WHERE brandId = {carModel.Id}");
+                    }
+                }
+
+                if (modelTypes != null && modelTypes.Count > 0)
+                {
+                    foreach (ModelTypeModel modelType in modelTypes)
+                    {
+                        cnn.Query($"DELETE FROM Model WHERE id = {modelType.Id}");
+                    }
+                }
             }
         }
 
@@ -143,6 +169,16 @@ namespace CarRefuelTracker.UI.DataAccess
                 return modeltype;
             }
         }
+
+        public static void RemoveModelTypeFromDatabase(ModelTypeModel model)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Query($"DELETE FROM Model WHERE id = {model.Id}");
+                cnn.Query($"DELETE FROM Car WHERE modelId = {model.Id}");
+            }
+        }
+
         #endregion
 
         #region FuelType Operations
@@ -173,6 +209,15 @@ namespace CarRefuelTracker.UI.DataAccess
                 }
 
                 return fuelType;
+            }
+        }
+
+        public static void RemoveFuelTypeFromDatabase(FuelTypeModel fuelTypeModel)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Query($"DELETE FROM TypeOfFuel WHERE id = {fuelTypeModel.Id}");
+                cnn.Query($"DELETE FROM Car WHERE typeoffuelid = {fuelTypeModel.Id}");
             }
         }
 

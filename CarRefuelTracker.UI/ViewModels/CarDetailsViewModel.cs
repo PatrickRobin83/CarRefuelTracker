@@ -284,6 +284,13 @@ namespace CarRefuelTracker.UI.ViewModels
             vm.ShowDialog(addBrandDialog, null, settings);
         }
 
+        public void RemoveBrand()
+        {
+            SqliteDataAccess.RemoveBrandFromDataBase(SelectedBrand);
+            AvailableBrands = new ObservableCollection<BrandModel>(SqliteDataAccess.LoadAllBrands());
+            SelectedBrand = AvailableBrands.First();
+        }
+
         public void AddModelType()
         {
             var addModelType = new AddModelTypeViewModel(SelectedBrand);
@@ -296,6 +303,13 @@ namespace CarRefuelTracker.UI.ViewModels
             vm.ShowDialog(addModelType, null,settings);
         }
 
+        public void RemoveModelType()
+        {
+            SqliteDataAccess.RemoveModelTypeFromDatabase(SelectedModelType);
+            SelectedBrand = AvailableBrands.First();
+            AvailableCarModels = new ObservableCollection<ModelTypeModel>(SqliteDataAccess.ModelsFromBrands(SelectedBrand.Id));
+        }
+
         public void AddFuelType()
         {
             var addFuelTypeDialog = new AddFuelTypeViewModel();
@@ -306,6 +320,13 @@ namespace CarRefuelTracker.UI.ViewModels
             settings.ResizeMode = ResizeMode.NoResize;
             settings.ShowInTaskbar = false;
             vm.ShowDialog(addFuelTypeDialog, null, settings);
+        }
+
+        public void RemoveFuelType()
+        {
+            SqliteDataAccess.RemoveFuelTypeFromDatabase(SelectedFuelType);
+            AvailableFuelTypes = new ObservableCollection<FuelTypeModel>(SqliteDataAccess.LoadAllFuelTypes());
+            SelectedFuelType = AvailableFuelTypes.First();
         }
 
         public void CancelCreateCar()

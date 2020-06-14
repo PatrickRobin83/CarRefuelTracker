@@ -213,6 +213,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 AvailableCars = new ObservableCollection<CarModel>(SqliteDataAccess.LoadCars());
                 NotifyOfPropertyChange(() => AvailableCars);
             }
+            AvailableCars = new ObservableCollection<CarModel>(SqliteDataAccess.LoadCars());
             SelectedCreateCarViewModelIsVisible = false;
         }
 
