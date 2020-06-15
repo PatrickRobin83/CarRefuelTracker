@@ -54,7 +54,7 @@ namespace CarRefuelTracker.UI.DataAccess
                     carModel.Brand = cnn.QueryFirst<BrandModel>($"SELECT * FROM Brand WHERE {carModel.BrandId} = id");
                     carModel.ModelType = cnn.QueryFirst<ModelTypeModel>($"SELECT * FROM Model WHERE {carModel.ModelId} = id");
                     carModel.FuelType = cnn.QueryFirst<FuelTypeModel>($"SELECT * from TypeOfFuel WHERE {carModel.TypeoffuelId} = id");
-                    allEntriesForCar = cnn.Query<EntryModel>($"SELECT * FROM Entry WHERE {carModel.Id} = carId").ToList();
+                    allEntriesForCar = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carModel.Id}  ORDER BY `entrydate` ASC;").ToList();
                     carModel.Entries = new ObservableCollection<EntryModel>(allEntriesForCar);
                 }
             }
@@ -227,7 +227,7 @@ namespace CarRefuelTracker.UI.DataAccess
             List<EntryModel> entryModels = new List<EntryModel>();
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                entryModels = cnn.Query<EntryModel>($"SELECT * FROM Entry WHERE CarId = '{carId}'").ToList();
+                entryModels = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carId}  ORDER BY `entrydate` ASC;").ToList();
 
                 return entryModels;
             }
