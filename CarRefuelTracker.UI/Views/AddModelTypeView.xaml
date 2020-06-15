@@ -11,15 +11,15 @@
         <StackPanel Orientation="Vertical" Margin="20">
             <TextBlock Text="Model hinzufügen" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,15"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBlock Text="Fahrzeugmarke: " FontSize="26" Width="200"></TextBlock>
+                <TextBlock Text="Fahrzeugmarke: " FontSize="20" Width="200"></TextBlock>
                 <TextBox Text="{Binding Path=BrandModel, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
-                         Width="200" IsReadOnly="True" HorizontalAlignment="Right" FontSize="26"
+                         Width="200" IsReadOnly="True" HorizontalAlignment="Right" FontSize="20"
                          VerticalContentAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Fahrzeugmodell: " FontSize="26" Width="200"/>
+                <TextBlock Text="Fahrzeugmodell: " FontSize="20" Width="200"/>
                 <TextBox Text="{Binding Path=ModelTypeModelName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                         Width="200" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                         Width="200" HorizontalAlignment="Right" VerticalContentAlignment="Center" FontSize="20"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="50">
                 <Button x:Name="Cancel" Content="Abbrechen" Margin="0,0,15,0"/>

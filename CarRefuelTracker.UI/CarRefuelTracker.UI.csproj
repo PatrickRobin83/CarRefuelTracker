@@ -102,6 +102,7 @@
     <Compile Include="ViewModels\CarDetailsViewModel.cs" />
     <Compile Include="ViewModels\DashboardEntryViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\EntryDetailsViewModel.cs" />
     <Compile Include="Views\AddBrandView.xaml.cs">
       <DependentUpon>AddBrandView.xaml</DependentUpon>
     </Compile>
@@ -119,6 +120,9 @@
     </Compile>
     <Compile Include="Views\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EntryDetailsView.xaml.cs">
+      <DependentUpon>EntryDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\testWindowNotInUse.xaml.cs">
       <DependentUpon>testWindowNotInUse.xaml</DependentUpon>
@@ -174,6 +178,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EntryDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

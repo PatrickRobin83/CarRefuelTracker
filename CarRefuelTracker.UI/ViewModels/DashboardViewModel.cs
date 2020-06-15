@@ -19,7 +19,7 @@ using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
 {
-    public class DashboardViewModel : Conductor<object>.Collection.OneActive, IHandle<EntryModel>, IHandle<CarModel>
+    public class DashboardViewModel : Conductor<object>.Collection.OneActive, IHandle<CarModel>
     {
         
 
@@ -181,6 +181,7 @@ namespace CarRefuelTracker.UI.ViewModels
         public void DeleteCar()
         {
             SqliteDataAccess.DeleteCar(SelectedCarModel);
+            NotifyOfPropertyChange(() => AvailableCars);
         }
 
         public void CreateNewCar()
@@ -195,14 +196,7 @@ namespace CarRefuelTracker.UI.ViewModels
         }
 
 
-        #region Implementation of IHandle<EntryModel>
-
-        public void Handle(EntryModel entryModel)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
+       
 
         #region Implementation of IHandle<CarModel>
 

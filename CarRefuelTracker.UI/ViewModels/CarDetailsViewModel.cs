@@ -208,9 +208,22 @@ namespace CarRefuelTracker.UI.ViewModels
             carModel = new CarModel();
             AvailableFuelTypes = new ObservableCollection<FuelTypeModel>(SqliteDataAccess.LoadAllFuelTypes());
             AvailableBrands = new ObservableCollection<BrandModel>(SqliteDataAccess.LoadAllBrands());
-            SelectedBrand = AvailableBrands.First();
-            SelectedModelType = AvailableCarModels.First();
-            SelectedFuelType = AvailableFuelTypes.First();
+
+            if (AvailableBrands != null && AvailableBrands.Count > 0)
+            {
+                SelectedBrand = AvailableBrands.First();
+            }
+
+            if (AvailableCarModels != null && AvailableCarModels.Count > 0)
+            {
+                SelectedModelType = AvailableCarModels.First();
+            }
+
+            if (AvailableFuelTypes != null && AvailableFuelTypes.Count > 0)
+            {
+                SelectedFuelType = AvailableFuelTypes.First();
+            }
+            
             IsActive = true;
             EventAggregationProvider.EventAggregator.Subscribe(this);
         }
@@ -268,9 +281,8 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 SqliteDataAccess.SaveCar(carToSave);
             }
-
-            SqliteDataAccess.LoadCars();
             EventAggregationProvider.EventAggregator.PublishOnUIThread(carToSave);
+            TryClose();
         }
         public void AddBrand()
         {
@@ -288,7 +300,10 @@ namespace CarRefuelTracker.UI.ViewModels
         {
             SqliteDataAccess.RemoveBrandFromDataBase(SelectedBrand);
             AvailableBrands = new ObservableCollection<BrandModel>(SqliteDataAccess.LoadAllBrands());
-            SelectedBrand = AvailableBrands.First();
+            if (AvailableBrands.Count > 0)
+            {
+                SelectedBrand = AvailableBrands.First();
+            }
         }
 
         public void AddModelType()
@@ -326,12 +341,16 @@ namespace CarRefuelTracker.UI.ViewModels
         {
             SqliteDataAccess.RemoveFuelTypeFromDatabase(SelectedFuelType);
             AvailableFuelTypes = new ObservableCollection<FuelTypeModel>(SqliteDataAccess.LoadAllFuelTypes());
-            SelectedFuelType = AvailableFuelTypes.First();
+            if (SelectedFuelType != null && AvailableFuelTypes.Count > 0)
+            {
+                SelectedFuelType = AvailableFuelTypes.First();
+            }
         }
 
         public void CancelCreateCar()
         {
             EventAggregationProvider.EventAggregator.PublishOnUIThread(new CarModel());
+            TryClose();
         }
 
 

@@ -11,8 +11,8 @@
         <StackPanel Orientation="Vertical">
             <TextBlock Text="Fahrzeugmarke hinzufügen" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <DockPanel Margin="20" VerticalAlignment="Top">
-            <TextBlock Margin="0,0,15,0" VerticalAlignment="Center" Text="Fahrzeugmarke: "/>
-            <TextBox Height="25" x:Name="BrandName"/>
+            <TextBlock Margin="0,0,15,0" FontSize="20" VerticalAlignment="Center" Text="Fahrzeugmarke: "/>
+            <TextBox Height="25" FontSize="20" x:Name="BrandName"/>
             </DockPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="Cancel" Content="Abbrechen" Margin="0,0,15,0"/>

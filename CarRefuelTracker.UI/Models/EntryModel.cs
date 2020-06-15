@@ -8,6 +8,8 @@
 * @author Patrick Robin <support@rietrob.de>
 */
 
+using System;
+
 namespace CarRefuelTracker.UI.Models
 
 {
@@ -20,52 +22,22 @@ namespace CarRefuelTracker.UI.Models
 
         #region Properties
         public int Id { get; set; }
-
-        public string Entrydate { get; set; }
-
-        public double PricePerLiter { get; set; }
-
-        public double AmountOffuel { get; set; }
-
-        public double DrivenDistance { get; set; }
-
-        public double Totalamount { get; set; }
-
-        public double CostPerHundredKilometer { get; set; }
-
-        public double ConsumptationPerHundredKilometer { get; set; }
-
+        public int CarId { get; set; }
+        public string EntryDate { get; set; }
+        public string PricePerLiter { get; set;}
+        public string AmountOffuel { get; set; }
+        public string DrivenDistance { get; set; }
+        public string TotalAmount { get; set; }
+        public string CostPerHundredKilometer { get; set; }
+        public string ConsumptationPerHundredKilometer { get; set; }
         #endregion
 
         #region Constructor
-
-        public EntryModel()
-        {
-            //   CalculateTotalCosts(PricePerLiter, AmountOffuel);
-            //   CalculateConsumptionPerHundredKilometer(AmountOffuel, DrivenDistance);
-        }
 
         #endregion
 
         #region Methods
 
-        private double CalculateTotalCosts(double pricePerLiter, double amountOfRefuel)
-        {
-            this.PricePerLiter = pricePerLiter;
-            this.AmountOffuel = amountOfRefuel;
-
-            Totalamount = pricePerLiter * amountOfRefuel;
-
-
-            return Totalamount;
-        }
-
-        private double CalculateConsumptionPerHundredKilometer(double amountOfFuel, double drivenDistance)
-        {
-            ConsumptationPerHundredKilometer = (amountOfFuel / drivenDistance) * 100;
-
-            return ConsumptationPerHundredKilometer;
-        }
 
         #endregion
 

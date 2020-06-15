@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
+using System.Data.Entity.Infrastructure.Design;
 using System.Data.SQLite;
 using System.Linq;
 using Caliburn.Micro;
@@ -84,18 +85,7 @@ namespace CarRefuelTracker.UI.DataAccess
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                // ToDo: Implement the DeleteCar Query
-                throw new NotImplementedException("Not implemented Yet");
-            }
-        }
-        public static List<ModelTypeModel> ModelsFromBrands(int brandId)
-        {
-            List<ModelTypeModel> carModels = new List<ModelTypeModel>();
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                carModels = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE {brandId} = brandId").ToList();
-
-                return carModels;
+                cnn.Query($"UPDATE Car SET isActive = 0");
             }
         }
         #endregion
@@ -125,7 +115,6 @@ namespace CarRefuelTracker.UI.DataAccess
                 return brand;
             }
         }
-
         public static void RemoveBrandFromDataBase(BrandModel brand)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -155,7 +144,16 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region Model Operations
+        public static List<ModelTypeModel> ModelsFromBrands(int brandId)
+        {
+            List<ModelTypeModel> carModels = new List<ModelTypeModel>();
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                carModels = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE {brandId} = brandId").ToList();
 
+                return carModels;
+            }
+        }
         public static ModelTypeModel AddModel(ModelTypeModel modeltype, BrandModel brandmodel)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -169,7 +167,6 @@ namespace CarRefuelTracker.UI.DataAccess
                 return modeltype;
             }
         }
-
         public static void RemoveModelTypeFromDatabase(ModelTypeModel model)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -224,7 +221,57 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region Entry Operations
-        //ToDo: implement all Methods to update, insert, and delete entries
+
+        public static List<EntryModel> LoadEntrysForCar(int carId)
+        {
+            List<EntryModel> entryModels = new List<EntryModel>();
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                entryModels = cnn.Query<EntryModel>($"SELECT * FROM Entry WHERE CarId = '{carId}'").ToList();
+
+                return entryModels;
+            }
+        }
+
+        public static EntryModel SaveEntryInDatabase(EntryModel entryToSave)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                entryToSave = cnn.Query<EntryModel>(@"INSERT INTO Entry(carId, entrydate, priceperliter, amountoffuel, drivendistance, totalamount, 
+                                                     costperhundredkilometer, consumptationperhundredkilometer) 
+                                                     VALUES(@CarId, @EntryDate, @PricePerLiter, 
+                                                     @AmountOfFuel, @DrivenDistance, @TotalAmount, @CostPerHundredKilometer, 
+                                                     @ConsumptationPerHundredKilometer); SELECT last_insert_rowid()", entryToSave).First();
+            }
+            return entryToSave;
+        }
+
+        public static void UpdateEntryInDatabase(EntryModel entryModelToUpdate)
+        {
+            try
+            {
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    cnn.Query(@"UPDATE Entry SET id = @CarId, entrydate = @EntryDate, priceperliter = @PricePerLiter, 
+                               amountoffuel = @AmountOfFuel, drivendistance = @DrivenDistance, totalamount = @TotalAmount, 
+                               costperhundredkilometer = @CostPerHundredKilometer, 
+                               consumptationperhundredkilometer = @ConsumptationPerHundredKilometer", entryModelToUpdate);
+                }
+            }
+            catch (SQLiteException e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public static void DeleteEntryFromDatabase(EntryModel entryToDelete)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Query($"DELETE FROM Entry WHERE id = {entryToDelete.Id}");
+            }
+        }
+
         #endregion
 
         #region private Methods

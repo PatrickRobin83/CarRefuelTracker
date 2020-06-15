@@ -8,26 +8,30 @@
 * @author Patrick Robin <support@rietrob.de>
 */
 
+using System;
 using System.Collections.ObjectModel;
+using System.Dynamic;
+using System.Windows;
 using Caliburn.Micro;
+using CarRefuelTracker.UI.DataAccess;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
 
 {
-    public class DashboardEntryViewModel : Screen
+    public class DashboardEntryViewModel : Conductor<object>.Collection.OneActive, IHandle<EntryModel>
     {
 
         #region Fields
 
         private CarModel carModel;
+        private int id;
         private ObservableCollection<EntryModel> carEntrys;
         private EntryModel selectedEntryModel;
 
         #endregion
 
         #region Properties
-
         public CarModel CarModel
         {
             get { return carModel; }
@@ -46,7 +50,6 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => CarEntrys);
             }
         }
-
         public EntryModel SelectedEntryModel
         {
             get { return selectedEntryModel; }
@@ -67,6 +70,7 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 CarModel = selectedCarModel;
                 CarEntrys = selectedCarModel.Entries;
+                EventAggregationProvider.EventAggregator.Subscribe(this);
             }
         }
 
@@ -74,11 +78,52 @@ namespace CarRefuelTracker.UI.ViewModels
 
         #region Methods
 
+        public void AddEntry()
+        {
+            var addEntryDialog = new EntryDetailsViewModel(CarModel);
+            var wm = new WindowManager();
+            dynamic settings = new ExpandoObject();
+            settings.Windowstyle = WindowStyle.None;
+            settings.Title = "Eintrag hinzufügen";
+            settings.ResizeMode = ResizeMode.NoResize;
+            settings.ShowInTaskbar = false;
+            wm.ShowDialog(addEntryDialog, null, settings);
+        }
+
+        public void EditEntry()
+        {
+            var editEntryDialog = new EntryDetailsViewModel(SelectedEntryModel);
+            var wm = new WindowManager();
+            dynamic settings = new ExpandoObject();
+            settings.Windowstyle = WindowStyle.None;
+            settings.Title = "Eintrag editieren";
+            settings.ResizeMode = ResizeMode.NoResize;
+            settings.ShowInTaskbar = false;
+            wm.ShowDialog(editEntryDialog, null, settings);
+            NotifyOfPropertyChange(() => CarEntrys);
+            NotifyOfPropertyChange(() => CarModel.Entries);
+        }
+
+        public void DeleteEntry()
+        {
+            SqliteDataAccess.DeleteEntryFromDatabase(SelectedEntryModel);
+            CarModel.Entries = new ObservableCollection<EntryModel>(SqliteDataAccess.LoadEntrysForCar(CarModel.Id));
+            //NotifyOfPropertyChange(() => CarEntrys);
+            //NotifyOfPropertyChange(() => CarModel.Entries);
+        }
         #endregion
 
         #region EventHandler
 
         #endregion
 
+        public void Handle(EntryModel entryModel)
+        {
+            CarEntrys = new ObservableCollection<EntryModel>(SqliteDataAccess.LoadEntrysForCar(CarModel.Id));
+           // CarModel.Entries = new ObservableCollection<EntryModel>(SqliteDataAccess.LoadEntrysForCar(CarModel.Id));
+             NotifyOfPropertyChange(() => CarEntrys); 
+            //NotifyOfPropertyChange(() => CarModel.Entries);
+
+        }
     }
 }
