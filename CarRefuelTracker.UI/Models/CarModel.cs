@@ -29,8 +29,6 @@ namespace CarRefuelTracker.UI.Models
         public ModelTypeModel ModelType { get; set; }
         public FuelTypeModel FuelType { get; set; }
         public BrandModel Brand { get; set; }
-        public double CarTaxPerYear { get; set; }
-        public double CarInsurance { get; set; }
         public ObservableCollection<EntryModel> Entries { get; set; }
 
         #endregion

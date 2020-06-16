@@ -4,16 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CarRefuelTracker.UI.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" Width="460" Height="270" BorderBrush="Black" BorderThickness="2">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <StackPanel Orientation="Vertical" Width="480" HorizontalAlignment="Left">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" >
+            <StackPanel Orientation="Vertical" Width="460" HorizontalAlignment="Left">
 
                 <StackPanel Orientation="Horizontal">
                     <Label FontSize="14" Width="110" Content="Fahrzeug Id: "/>
@@ -72,20 +71,7 @@
                             Content="Kraftstoff -" VerticalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Vertical" Width="245">
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Label Width="140" FontSize="14" Content="Steuer / Jahr: "/>
-                    <TextBox  VerticalAlignment="Center" 
-                              Text="{Binding CarTaxPerYear, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal">
-                    <Label Width="140" FontSize="14" Content="Versicherung / Jahr: "/>
-                    <TextBox  VerticalAlignment="Center" Text="{Binding CarInsurance, ValidatesOnDataErrors=True , 
-                              UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                </StackPanel>
-            </StackPanel>
         </StackPanel>
         <Button x:Name="CancelCreateCar" Grid.Row="1" Content="Abbrechen" 
                 Margin="10,0,0,10" HorizontalAlignment="left" VerticalAlignment="Bottom"/>

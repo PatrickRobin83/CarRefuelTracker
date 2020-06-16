@@ -54,7 +54,7 @@ namespace CarRefuelTracker.UI.DataAccess
                     carModel.Brand = cnn.QueryFirst<BrandModel>($"SELECT * FROM Brand WHERE {carModel.BrandId} = id");
                     carModel.ModelType = cnn.QueryFirst<ModelTypeModel>($"SELECT * FROM Model WHERE {carModel.ModelId} = id");
                     carModel.FuelType = cnn.QueryFirst<FuelTypeModel>($"SELECT * from TypeOfFuel WHERE {carModel.TypeoffuelId} = id");
-                    allEntriesForCar = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carModel.Id}  ORDER BY `entrydate` ASC;").ToList();
+                    allEntriesForCar = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carModel.Id}  ORDER BY Date(Replace(entrydate, '.', '-'));").ToList();
                     carModel.Entries = new ObservableCollection<EntryModel>(allEntriesForCar);
                 }
             }
@@ -64,10 +64,9 @@ namespace CarRefuelTracker.UI.DataAccess
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                carToSave = cnn.Query<CarModel>(@"INSERT INTO Car(brandid, modelid, typeoffuelid, cartaxperyear, 
-                                                   carinsurance, isActive) 
-                                                   VALUES(@BrandId, @ModelId, @TypeOfFuelId, @CarTaxPerYear, 
-                                                   @CarInsurance, @IsActive); SELECT last_insert_rowid()",carToSave).First();
+                carToSave = cnn.Query<CarModel>(@"INSERT INTO Car(brandid, modelid, typeoffuelid,isActive) 
+                                                   VALUES(@BrandId, @ModelId, @TypeOfFuelId, @IsActive); 
+                                                   SELECT last_insert_rowid()",carToSave).First();
             }
 
             return carToSave;
@@ -77,8 +76,7 @@ namespace CarRefuelTracker.UI.DataAccess
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 cnn.Query(@"UPDATE Car SET brandid = @BrandId, modelid = @ModelId, typeoffuelid = @TypeOfFuelId, 
-                              cartaxperyear = @CarTaxPerYear, carinsurance = @CarInsurance, isActive = @isActive 
-                              WHERE id = @Id",carToUpdate);
+                              isActive = @isActive WHERE id = @Id",carToUpdate);
             }
         }
         public static void DeleteCar(CarModel carToDelete)
@@ -227,7 +225,7 @@ namespace CarRefuelTracker.UI.DataAccess
             List<EntryModel> entryModels = new List<EntryModel>();
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                entryModels = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carId}  ORDER BY `entrydate` ASC;").ToList();
+                entryModels = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carId}  ORDER BY Date(Replace(entrydate, '.', '-'));").ToList();
 
                 return entryModels;
             }
@@ -252,10 +250,10 @@ namespace CarRefuelTracker.UI.DataAccess
             {
                 using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    cnn.Query(@"UPDATE Entry SET id = @CarId, entrydate = @EntryDate, priceperliter = @PricePerLiter, 
+                    cnn.Query(@"UPDATE Entry SET carid = @CarId, entrydate = @EntryDate, priceperliter = @PricePerLiter, 
                                amountoffuel = @AmountOfFuel, drivendistance = @DrivenDistance, totalamount = @TotalAmount, 
                                costperhundredkilometer = @CostPerHundredKilometer, 
-                               consumptationperhundredkilometer = @ConsumptationPerHundredKilometer", entryModelToUpdate);
+                               consumptationperhundredkilometer = @ConsumptationPerHundredKilometer WHERE id = @Id", entryModelToUpdate);
                 }
             }
             catch (SQLiteException e)

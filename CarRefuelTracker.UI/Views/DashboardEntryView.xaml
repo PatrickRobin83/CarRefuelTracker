@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CarRefuelTracker.UI.Views"
              mc:Ignorable="d" 
-              d:DesignHeight="450" d:DesignWidth="800" Background="LightBlue">
+              d:DesignHeight="450" d:DesignWidth="800"
+             BorderBrush="Black" BorderThickness="2">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,11 +17,11 @@
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center" 
                        FontSize="20"/>
-            <DataGrid Margin="5,0,5,0"
+            <DataGrid Margin="5,0,5,0" MaxHeight="300"
                           ItemsSource="{Binding Path=CarEntrys, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                           AutoGenerateColumns="False" CanUserAddRows="False" CanUserResizeColumns="False" 
                           CanUserResizeRows="False" SelectedItem="{Binding Path=SelectedEntryModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                          SelectionMode="Single" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True">
+                          SelectionMode="Single" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header=" Datum " IsReadOnly="True" Binding="{Binding EntryDate}" SortDirection="Descending"/>
                     <DataGridTextColumn Header=" Preis pro Liter in € " IsReadOnly="True" Binding="{Binding PricePerLiter}"/>
@@ -32,10 +33,33 @@
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="0,20,0,0">
-            <Button Height="25" x:Name="AddEntry" Content="Eintrag anlegen" Margin="10,5,0,5"/>
-            <Button Height="25" x:Name="EditEntry" Content="Eintrag ändern" Margin="10,5,0,5"/>
-            <Button Height="25" x:Name="DeleteEntry" Content="Eintrag löschen" Margin="10,5,0,5"/>
+        <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Bottom" Margin="0,30,0,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <TextBlock Margin="10,0,0,0" Text="Ø Preis/Liter: "/>
+                <TextBox IsReadOnly="True" Text="{Binding AveragePricePerLiter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Width="50" TextAlignment="Right" />
+                <TextBlock Margin="10,0,0,0" Text="getankte Menge: "/>
+                <TextBox IsReadOnly="True" Text="{Binding AverageFuelAmount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Width="50" TextAlignment="Right" />
+                <TextBlock Margin="10,0,0,0" Text="Kosten: "/>
+                <TextBox IsReadOnly="True" Text="{Binding AverageRefuelCosts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Width="50" TextAlignment="Right" />
+                <TextBlock Margin="10,0,0,0" Text="gefahrene km: "/>
+                <TextBox IsReadOnly="True" Text="{Binding AverageDrivenDistance, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Width="50" TextAlignment="Right" />
+                <TextBlock Margin="10,0,0,0" Text="Ø Verbrauch: "/>
+                <TextBox IsReadOnly="True" Text="{Binding AverageConsumption, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Width="50" TextAlignment="Right" />
+                <TextBlock Margin="10,0,0,0" Text="Ø Kosten: "/>
+                <TextBox IsReadOnly="True" Text="{Binding AverageCosts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Width="50" TextAlignment="Right" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="0,20,0,0">
+                <Button Height="25" x:Name="AddEntry" Content="Eintrag anlegen" Margin="10,5,0,5"/>
+                <Button Height="25" x:Name="EditEntry" Content="Eintrag ändern" Margin="10,5,0,5"/>
+                <Button Height="25" x:Name="DeleteEntry" Content="Eintrag löschen" Margin="10,5,0,5"/>
+            </StackPanel>
         </StackPanel>
+       
     </Grid>
 </UserControl>

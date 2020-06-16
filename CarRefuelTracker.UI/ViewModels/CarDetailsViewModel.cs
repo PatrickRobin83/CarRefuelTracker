@@ -22,7 +22,7 @@ using CarRefuelTracker.UI.Models;
 namespace CarRefuelTracker.UI.ViewModels
 
 {
-    public class CarDetailsViewModel : Conductor<object>.Collection.OneActive, IDataErrorInfo, 
+    public class CarDetailsViewModel : Conductor<object>.Collection.OneActive, 
                                       IHandle<BrandModel>, IHandle<ModelTypeModel>, IHandle<FuelTypeModel>
     {
 
@@ -113,16 +113,6 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(SelectedFuelType));
             }
         }
-        public string CarTaxPerYear
-        {
-            get { return carTaxPerYear; }
-            set
-            {
-                carTaxPerYear = value;
-                NotifyOfPropertyChange(nameof(CarTaxPerYear));
-                NotifyOfPropertyChange(() => CanSaveCar);
-            }
-        }
         public ObservableCollection<EntryModel> Entries
         {
             get { return entries; }
@@ -158,45 +148,6 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 availableFuelTypes = value;
                 NotifyOfPropertyChange(nameof(AvailableFuelTypes));
-            }
-        }
-        public string CarInsurance
-        {
-            get { return carInsurance; }
-            set
-            {
-                carInsurance = value;
-                NotifyOfPropertyChange(nameof(CarInsurance));
-                NotifyOfPropertyChange(() => CanSaveCar);
-            }
-        }
-        public IDataErrorInfo DataErrorInfoImplementation
-        {
-            get { return dataErrorInfoImplementation; }
-            set
-            {
-                dataErrorInfoImplementation = value;
-                NotifyOfPropertyChange(nameof(DataErrorInfoImplementation));
-            }
-        }
-        public string Error { get; }
-        public bool CanSaveCar
-        {
-            get
-            {
-                double tmpDouble = 0;
-                double tmpDouble2 = 0;
-
-                bool canConvertCarTax = double.TryParse(CarTaxPerYear, out tmpDouble);
-                bool canCpnvertInsurance = double.TryParse(CarInsurance, out tmpDouble2);
-                if (canConvertCarTax == true && canCpnvertInsurance == true)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
             }
         }
 
@@ -247,9 +198,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 AvailableCarModels = new ObservableCollection<ModelTypeModel>(SqliteDataAccess.ModelsFromBrands(SelectedBrand.Id));
                 SelectedModelType = CarModel.ModelType;
                 SelectedFuelType = CarModel.FuelType;
-                CarTaxPerYear = Convert.ToString(CarModel.CarTaxPerYear);
                 Entries = CarModel.Entries;
-                CarInsurance = Convert.ToString(CarModel.CarInsurance);
                 NotifyOfPropertyChange(() => SelectedBrand);
                 NotifyOfPropertyChange(() => SelectedModelType);
                 NotifyOfPropertyChange(() => SelectedFuelType);
@@ -269,9 +218,7 @@ namespace CarRefuelTracker.UI.ViewModels
             carToSave.ModelId = SelectedModelType.Id;
             carToSave.FuelType = SelectedFuelType;
             carToSave.TypeoffuelId = SelectedFuelType.Id;
-            carToSave.CarTaxPerYear = Convert.ToDouble(CarTaxPerYear);
             carToSave.Entries = Entries;
-            carToSave.CarInsurance = Convert.ToDouble(CarInsurance);
 
             if (carToSave.Id > 0)
             {
@@ -393,31 +340,6 @@ namespace CarRefuelTracker.UI.ViewModels
         }
 
         #endregion
-
-        public string this[string propertyName]
-        {
-            get
-            {
-                if (propertyName == nameof(CarTaxPerYear))
-                {
-                    double tmp;
-                    if (!Double.TryParse(CarTaxPerYear, out tmp))
-                    {
-                        return "not a double";
-                    }
-                }
-                if (propertyName == nameof(CarInsurance))
-                {
-                    double tmp;
-                    if (!Double.TryParse(CarInsurance, out tmp))
-                    {
-                        return "not a double";
-                    }
-                }
-
-                return null;
-            }
-        }
 
         #endregion
 

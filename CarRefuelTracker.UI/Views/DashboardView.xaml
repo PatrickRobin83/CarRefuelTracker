@@ -5,27 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarRefuelTracker.UI.Views"
         mc:Ignorable="d"
-        Title="CarRefuelTracker" Height="700" Width="1300">
+        Title="CarRefuelTracker" Height="700" Width="1300" Background="LightBlue">
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10" />
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10" />
 
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Orientation="Vertical">
+            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Orientation="Vertical">
                 <Label Content="Angelegte Fahrzeuge" 
                    VerticalAlignment="Center" 
                    HorizontalAlignment="Center" 
@@ -44,20 +48,25 @@
                 </DataGrid>
             </StackPanel>
 
-            <StackPanel x:Name="SelectedEntryViewModelIsVisible" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3 " >
+            <StackPanel x:Name="SelectedEntryViewModelIsVisible" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3 " >
                 <ContentControl x:Name="SelectedEntryViewModel" Margin="0,10,0,0"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+            <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="3">
                 <Button x:Name="CreateNewCar" Height="25" Content="Fahrzeug anlegen" Margin="10,35,0,0"/>
                 <Button x:Name="EditCar" Height="25" Content="Fahrzeug ändern" Margin="10,5,0,0"/>
                 <Button x:Name="DeleteCar" Height="25" Content="Fahrzeug löschen" Margin="10,5,0,0" />
             </StackPanel>
-            <StackPanel Margin="10,10,10,0" x:Name="SelectedCreateCarViewModelIsVisible" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3">
+
+            <StackPanel Margin="10,10,10,0" x:Name="SelectedCreateCarViewModelIsVisible" 
+                        Grid.Row="1" Grid.Column="3" Grid.RowSpan="3">
                 <ContentControl x:Name="CarDetailsViewModel" Margin="5,5,0,0"/>
             </StackPanel>
-            <ContentControl Grid.Row="3" Grid.Column="3"/>
+            <ContentControl Grid.Row="4" Grid.Column="4"/>
         </Grid>
-        <Button x:Name="Exit" Width="100" Height="25" Background="DarkRed" Foreground="AliceBlue" Content="Beenden" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10"></Button>
+        <Button x:Name="Exit" Width="100" Height="25" 
+                Background="DarkRed" Foreground="AliceBlue" 
+                Content="Beenden" HorizontalAlignment="Right" 
+                VerticalAlignment="Bottom" Margin="0,0,10,10"/>
     </Grid>
 </Window>
