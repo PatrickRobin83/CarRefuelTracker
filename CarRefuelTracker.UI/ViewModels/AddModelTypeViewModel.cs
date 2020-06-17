@@ -75,7 +75,7 @@ namespace CarRefuelTracker.UI.ViewModels
         public AddModelTypeViewModel(BrandModel brandModel)
         {
             BrandModel = brandModel;
-            NotifyOfPropertyChange(() => BrandModel);
+            
         }
 
         #endregion

@@ -23,7 +23,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="50">
                 <Button x:Name="Cancel" Content="Abbrechen" Margin="0,0,15,0"/>
-                <Button x:Name="AddModelType" Content="Fahrzeugmarke speichern"/>
+                <Button x:Name="AddModelType" Content="Fahrzeugmodell speichern"/>
             </StackPanel>
         </StackPanel>
     </Grid>
