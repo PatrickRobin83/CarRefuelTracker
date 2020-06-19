@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="DataAccess\SqliteDataAccess.cs" />
     <Compile Include="EventAggregationProvider.cs" />
+    <Compile Include="Helper\TextFieldDoubleChecker.cs" />
     <Compile Include="Models\BrandModel.cs" />
     <Compile Include="Models\CarModel.cs" />
     <Compile Include="Models\EntryModel.cs" />
@@ -195,6 +196,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

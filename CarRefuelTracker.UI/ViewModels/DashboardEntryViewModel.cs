@@ -11,6 +11,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Dynamic;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
@@ -28,12 +30,12 @@ namespace CarRefuelTracker.UI.ViewModels
         private int id;
         private ObservableCollection<EntryModel> carEntrys;
         private EntryModel selectedEntryModel;
-        private double averagePricePerLiter;
-        private double averageFuelAmount;
-        private double averageRefuelCosts;
-        private double averageDrivenDistance;
-        private double averageConsumption;
-        private double averageCosts;
+        private string averagePricePerLiter;
+        private string averageFuelAmount;
+        private string averageRefuelCosts;
+        private string averageDrivenDistance;
+        private string averageConsumption;
+        private string averageCosts;
         #endregion
 
         #region Properties
@@ -92,7 +94,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 return result;
             }
         }
-        public double AveragePricePerLiter
+        public string AveragePricePerLiter
         {
             get { return averagePricePerLiter; }
             set
@@ -101,7 +103,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AveragePricePerLiter);
             }
         }
-        public double AverageFuelAmount
+        public string AverageFuelAmount
         {
             get { return averageFuelAmount; }
             set
@@ -110,7 +112,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AverageFuelAmount);
             }
         }
-        public double AverageRefuelCosts
+        public string AverageRefuelCosts
         {
             get { return averageRefuelCosts; }
             set
@@ -119,7 +121,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AverageRefuelCosts);
             }
         }
-        public double AverageDrivenDistance
+        public string AverageDrivenDistance
         {
             get { return averageDrivenDistance; }
             set
@@ -128,7 +130,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AverageDrivenDistance);
             }
         }
-        public double AverageConsumption
+        public string AverageConsumption
         {
             get { return averageConsumption; }
             set
@@ -137,7 +139,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AverageConsumption);
             }
         }
-        public double AverageCosts
+        public string AverageCosts
         {
             get { return averageCosts; }
             set
@@ -216,12 +218,62 @@ namespace CarRefuelTracker.UI.ViewModels
                 tmpConsumption += Convert.ToDouble(entryModel.ConsumptationPerHundredKilometer);
                 tmpCosts += Convert.ToDouble(entryModel.CostPerHundredKilometer);
             }
-            AveragePricePerLiter = Math.Round(tmpPricePerLiter / CarEntrys.Count,3);
-            AverageFuelAmount = Math.Round(tmpFuelAmount,2);
-            AverageRefuelCosts = Math.Round(tmpRefuelCosts,2);
-            AverageDrivenDistance = Math.Round(tmpDrivenDistance,2);
-            AverageConsumption = Math.Round(tmpConsumption / CarEntrys.Count,2);
-            AverageCosts = Math.Round(tmpCosts / CarEntrys.Count,2);
+            #region double.IsNan Validation
+
+            if (!double.IsNaN(Math.Round(tmpPricePerLiter / CarEntrys.Count, 3)))
+            {
+                AveragePricePerLiter = Convert.ToString(Math.Round(tmpPricePerLiter / CarEntrys.Count, 3));
+
+            }
+            else
+            {
+                AveragePricePerLiter = "0";
+            }
+            if(!double.IsNaN(Math.Round(tmpFuelAmount, 2)))
+            {
+                AverageFuelAmount = Convert.ToString(Math.Round(tmpFuelAmount, 2));
+            }
+            else
+            {
+                AverageFuelAmount = "0";
+            }
+
+            if (!double.IsNaN(Math.Round(tmpRefuelCosts, 2)))
+            {
+                AverageRefuelCosts = Convert.ToString(Math.Round(tmpRefuelCosts, 2));
+            }
+            else
+            {
+                AverageRefuelCosts = "0";
+            }
+
+            if (!double.IsNaN(Math.Round(tmpDrivenDistance, 2)))
+            {
+                AverageDrivenDistance = Convert.ToString(Math.Round(tmpDrivenDistance, 2));
+            }
+            else
+            {
+                AverageDrivenDistance = "0";
+            }
+
+            if (!double.IsNaN(Math.Round(tmpConsumption / CarEntrys.Count, 2)))
+            {
+                AverageConsumption = Convert.ToString(Math.Round(tmpConsumption / CarEntrys.Count, 2));
+            }
+            else
+            {
+                AverageConsumption = "0";
+            }
+            if (!double.IsNaN(Math.Round(tmpCosts / CarEntrys.Count, 2)))
+            {
+                AverageCosts = Convert.ToString(Math.Round(tmpCosts / CarEntrys.Count, 2));
+            }
+            else
+            {
+                AverageCosts = "0";
+            }
+
+            #endregion
         }
         #endregion
 

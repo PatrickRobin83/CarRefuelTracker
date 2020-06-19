@@ -12,6 +12,8 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;

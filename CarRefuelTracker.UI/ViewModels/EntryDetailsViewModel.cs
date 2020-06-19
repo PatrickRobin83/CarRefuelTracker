@@ -13,6 +13,7 @@
 using System;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
@@ -94,8 +95,12 @@ namespace CarRefuelTracker.UI.ViewModels
             get { return pricePerLiter; }
             set
             {
-                pricePerLiter = value; 
+                pricePerLiter = value;
                 NotifyOfPropertyChange(() => PricePerLiter);
+                if (!TextFieldDoubleChecker.CheckIsInputDouble(PricePerLiter))
+                {
+                    PricePerLiter = "";
+                }
             }
         }
         public string AmountOfFuel
@@ -105,6 +110,11 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 amountOfFuel = value; 
                 NotifyOfPropertyChange(() => AmountOfFuel);
+                if (!TextFieldDoubleChecker.CheckIsInputDouble(AmountOfFuel))
+                {
+                    AmountOfFuel = "";
+                }
+
             }
         }
         public string DrivenDistance
@@ -114,6 +124,10 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 drivenDistance = value; 
                 NotifyOfPropertyChange(() => DrivenDistance);
+                if (!TextFieldDoubleChecker.CheckIsInputDouble(DrivenDistance))
+                {
+                    DrivenDistance = "";
+                }
             }
         }
         public string TotalAmount
@@ -123,6 +137,10 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 totalAmount = value; 
                 NotifyOfPropertyChange(() => TotalAmount);
+                if (!TextFieldDoubleChecker.CheckIsInputDouble(TotalAmount))
+                {
+                    TotalAmount = "";
+                }
             }
         }
         public string CostPerHundredKilometer
@@ -229,10 +247,15 @@ namespace CarRefuelTracker.UI.ViewModels
         {
             double result; 
 
-            result = Convert.ToDouble(PricePerLiter) * Convert.ToDouble(AmountOfFuel);
-
-            result = Math.Round(result, 2);
-
+            if (!double.IsNaN(Convert.ToDouble(PricePerLiter) * Convert.ToDouble(AmountOfFuel)))
+            {
+                result = Convert.ToDouble(PricePerLiter) * Convert.ToDouble(AmountOfFuel);
+                result = Math.Round(result, 2);
+            }
+            else
+            {
+                result = 0;
+            }
             TotalAmount = result.ToString();
 
             return TotalAmount;
@@ -240,11 +263,18 @@ namespace CarRefuelTracker.UI.ViewModels
         private string CalculateConsumptationOfHundredKilometer()
         {
             double result;
+
+            if (!double.IsNaN(Convert.ToDouble(AmountOfFuel) / Convert.ToDouble(DrivenDistance) * 100))
+            {
+                result = (Convert.ToDouble(AmountOfFuel) / Convert.ToDouble(DrivenDistance)) * 100;
+
+                result = Math.Round(result, 2);
+            }
+            else
+            {
+                result = 0;
+            }
             
-            result = (Convert.ToDouble(AmountOfFuel) / Convert.ToDouble(DrivenDistance)) * 100;
-
-            result = Math.Round(result, 2);
-
             ConsumptationOfHundredKilometer = result.ToString();
 
             return ConsumptationOfHundredKilometer;
