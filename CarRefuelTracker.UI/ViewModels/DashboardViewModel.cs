@@ -17,14 +17,15 @@ using System.Threading;
 using System.Windows;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
+
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace CarRefuelTracker.UI.ViewModels
 {
     public class DashboardViewModel : Conductor<object>.Collection.OneActive, IHandle<CarModel>
     {
-        
-
         #region Fields
 
         private IWindowManager windowManager;
@@ -34,8 +35,9 @@ namespace CarRefuelTracker.UI.ViewModels
         private ObservableCollection<CarModel> availableCars;
         private bool selectedEntryViewModelIsVisible = false;
         private bool selectedCreateCarViewModelIsVisible = false;
-
-
+        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger
+        //      (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog Log = LogHelper.GetLogger();
         #endregion
 
         #region Properties
@@ -172,6 +174,7 @@ namespace CarRefuelTracker.UI.ViewModels
         public void ShowSelectedEntryViewModel()
         {
             SelectedEntryViewModel = new DashboardEntryViewModel(SelectedCarModel);
+            Log.Info("Selected CarModel change");
         }
 
         public void EditCar()
