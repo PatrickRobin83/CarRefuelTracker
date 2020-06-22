@@ -8,8 +8,11 @@
 * @author Patrick Robin <support@rietrob.de>
 */
 
+using System;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
@@ -60,15 +63,21 @@ namespace CarRefuelTracker.UI.ViewModels
 
         public void Cancel()
         {
+            LogHelper.WriteToLog("Cancel Button clicked, no Brand created", LogState.Debug);
             TryClose();
         }
 
         public void AddBrand()
         {
+            LogHelper.WriteToLog("Brand creation started", LogState.Debug);
             Brand = new BrandModel();
             Brand.BrandName = BrandName;
             Brand = SqliteDataAccess.AddBrand(Brand);
             EventAggregationProvider.EventAggregator.PublishOnUIThread(Brand);
+            if (Brand != null && Brand.BrandName != "")
+            {
+                LogHelper.WriteToLog("Brand created", LogState.Info);
+            }
             TryClose();
 
         }

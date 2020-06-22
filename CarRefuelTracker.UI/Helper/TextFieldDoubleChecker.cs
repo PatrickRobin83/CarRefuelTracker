@@ -9,6 +9,7 @@
 */
 
 using System.Runtime.InteropServices;
+using CarRefuelTracker.UI.Enums;
 
 namespace CarRefuelTracker.UI.Helper
 
@@ -39,7 +40,7 @@ namespace CarRefuelTracker.UI.Helper
 
             if (inputToCheck != "")
             {
-               return double.TryParse(inputToCheck, out result);
+                return double.TryParse(inputToCheck, out result);
             }
             else
             {

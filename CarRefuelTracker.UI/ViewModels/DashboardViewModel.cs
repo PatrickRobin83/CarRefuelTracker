@@ -12,11 +12,9 @@
 
 using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Threading;
-using System.Windows;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
 using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
@@ -29,26 +27,23 @@ namespace CarRefuelTracker.UI.ViewModels
         #region Fields
 
         private IWindowManager windowManager;
-        private DashboardEntryViewModel selectedEntryViewModel;
+        private DashboardEntryViewModel selectedCarEntryViewModel;
         private CarDetailsViewModel carDetailsViewModel;
         private CarModel selectedCarModel;
         private ObservableCollection<CarModel> availableCars;
         private bool selectedEntryViewModelIsVisible = false;
         private bool selectedCreateCarViewModelIsVisible = false;
-        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger
-        //      (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly log4net.ILog Log = LogHelper.GetLogger();
         #endregion
 
         #region Properties
 
-        public DashboardEntryViewModel SelectedEntryViewModel
+        public DashboardEntryViewModel SelectedCarEntryViewModel
         {
-            get { return selectedEntryViewModel; }
+            get { return selectedCarEntryViewModel; }
             set
             {
-                selectedEntryViewModel = value;
-                NotifyOfPropertyChange(() => SelectedEntryViewModel);
+                selectedCarEntryViewModel = value;
+                NotifyOfPropertyChange(() => SelectedCarEntryViewModel);
             }
         }
         public CarDetailsViewModel CarDetailsViewModel
@@ -72,7 +67,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => SelectedCarModel);
                 NotifyOfPropertyChange(() => CanEditCar);
                 NotifyOfPropertyChange(() => CanDeleteCar);
-                ShowSelectedEntryViewModel();
+                ShowEntriesForSelectedCar();
                 SelectedEntryViewModelIsVisible = SelectedCarModel != null;
             }
         }
@@ -165,43 +160,41 @@ namespace CarRefuelTracker.UI.ViewModels
             windowManager = new WindowManager();
             AvailableCars = new ObservableCollection<CarModel>(SqliteDataAccess.LoadCars());
             EventAggregationProvider.EventAggregator.Subscribe(this);
+            LogHelper.WriteToLog("Application started",LogState.Info);
         }
 
         #endregion
 
         #region Methods
 
-        public void ShowSelectedEntryViewModel()
+        public void ShowEntriesForSelectedCar()
         {
-            SelectedEntryViewModel = new DashboardEntryViewModel(SelectedCarModel);
-            Log.Info("Selected CarModel change");
+            SelectedCarEntryViewModel = new DashboardEntryViewModel(SelectedCarModel);
         }
-
         public void EditCar()
         {
             CarDetailsViewModel = new CarDetailsViewModel(SelectedCarModel);
             SelectedCreateCarViewModelIsVisible = true;
+            LogHelper.WriteToLog("EditCar Button clicked",LogState.Debug);
         }
-
         public void DeleteCar()
         {
             SqliteDataAccess.DeleteCar(SelectedCarModel);
             NotifyOfPropertyChange(() => AvailableCars);
+            LogHelper.WriteToLog($"Car {SelectedCarModel.Brand} {SelectedCarModel.ModelType} was deleted", LogState.Info);
         }
-
         public void CreateNewCar()
         {
             SelectedCarModel = null;
             CarDetailsViewModel = new CarDetailsViewModel();
             SelectedCreateCarViewModelIsVisible = true;
+            LogHelper.WriteToLog("CreateNewCarButton clicked", LogState.Debug);
         }
         public void Exit()
         {
+            LogHelper.WriteToLog("Application Exited", LogState.Info);
             Environment.Exit(0);
         }
-
-
-       
 
         #region Implementation of IHandle<CarModel>
 

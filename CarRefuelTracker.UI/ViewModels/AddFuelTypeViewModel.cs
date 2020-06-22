@@ -10,6 +10,8 @@
 
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
@@ -53,15 +55,21 @@ namespace CarRefuelTracker.UI.ViewModels
 
         public void Cancel()
         {
+            LogHelper.WriteToLog("Cancel Button clicked, no fuelType created", LogState.Debug);
             TryClose();
         }
 
         public void AddFuelType()
         {
+            LogHelper.WriteToLog("FuelType creation started", LogState.Debug);
             FuelTypeModel = new FuelTypeModel();
             FuelTypeModel.TypeOfFuel = FuelTypeName;
             FuelTypeModel = SqliteDataAccess.AddFuelType(FuelTypeModel);
             EventAggregationProvider.EventAggregator.PublishOnUIThread(FuelTypeModel);
+            if (FuelTypeModel.TypeOfFuel != null && FuelTypeModel.TypeOfFuel != "")
+            {
+                LogHelper.WriteToLog("Brand created", LogState.Info);
+            }
             TryClose();
         }
 

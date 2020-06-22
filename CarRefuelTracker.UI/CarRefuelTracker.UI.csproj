@@ -93,6 +93,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataAccess\SqliteDataAccess.cs" />
+    <Compile Include="Enums\LogState.cs" />
     <Compile Include="EventAggregationProvider.cs" />
     <Compile Include="Helper\LogHelper.cs" />
     <Compile Include="Helper\TextFieldDoubleChecker.cs" />

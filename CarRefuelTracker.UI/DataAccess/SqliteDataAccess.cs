@@ -17,6 +17,8 @@ using System.Data.Entity.Infrastructure.Design;
 using System.Data.SQLite;
 using System.Linq;
 using Caliburn.Micro;
+using CarRefuelTracker.UI.Enums;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 using Dapper;
 
@@ -46,44 +48,76 @@ namespace CarRefuelTracker.UI.DataAccess
             List<CarModel> allCarModels = new List<CarModel>();
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                allCarModels = cnn.Query<CarModel>("SELECT * FROM Car WHERE isActive = 1").ToList();
-
-                foreach (CarModel carModel in allCarModels)
+                try
                 {
-                    List<EntryModel> allEntriesForCar = new List<EntryModel>();
-                    carModel.Brand = cnn.QueryFirst<BrandModel>($"SELECT * FROM Brand WHERE {carModel.BrandId} = id");
-                    carModel.ModelType = cnn.QueryFirst<ModelTypeModel>($"SELECT * FROM Model WHERE {carModel.ModelId} = id");
-                    carModel.FuelType = cnn.QueryFirst<FuelTypeModel>($"SELECT * from TypeOfFuel WHERE {carModel.TypeoffuelId} = id");
-                    allEntriesForCar = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carModel.Id}  ORDER BY Date(Replace(entrydate, '.', '-'));").ToList();
-                    carModel.Entries = new ObservableCollection<EntryModel>(allEntriesForCar);
+                    allCarModels = cnn.Query<CarModel>("SELECT * FROM Car WHERE isActive = 1").ToList();
+
+                    foreach (CarModel carModel in allCarModels)
+                    {
+                        List<EntryModel> allEntriesForCar = new List<EntryModel>();
+                        carModel.Brand = cnn.QueryFirst<BrandModel>($"SELECT * FROM Brand WHERE {carModel.BrandId} = id");
+                        carModel.ModelType = cnn.QueryFirst<ModelTypeModel>($"SELECT * FROM Model WHERE {carModel.ModelId} = id");
+                        carModel.FuelType = cnn.QueryFirst<FuelTypeModel>($"SELECT * from TypeOfFuel WHERE {carModel.TypeoffuelId} = id");
+                        allEntriesForCar = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carModel.Id}  ORDER BY Date(Replace(entrydate, '.', '-'));").ToList();
+                        carModel.Entries = new ObservableCollection<EntryModel>(allEntriesForCar);
+                    }
+                    return allCarModels;
+                }
+                catch (SQLiteException ex)
+                {
+                    LogHelper.WriteToLog("LoadCars Error", LogState.Error);
+                    return new List<CarModel>();
                 }
             }
-            return allCarModels;
+            
         }
         public static CarModel SaveCar(CarModel carToSave)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                carToSave = cnn.Query<CarModel>(@"INSERT INTO Car(brandid, modelid, typeoffuelid,isActive) 
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    carToSave = cnn.Query<CarModel>(@"INSERT INTO Car(brandid, modelid, typeoffuelid,isActive) 
                                                    VALUES(@BrandId, @ModelId, @TypeOfFuelId, @IsActive); 
                                                    SELECT last_insert_rowid()",carToSave).First();
+                }
+                return carToSave;
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("SaveCar Error", LogState.Error);
+                return new CarModel();
             }
 
-            return carToSave;
+            
         }
         public static void UpdateCar(CarModel carToUpdate)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                cnn.Query(@"UPDATE Car SET brandid = @BrandId, modelid = @ModelId, typeoffuelid = @TypeOfFuelId, 
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    cnn.Query(@"UPDATE Car SET brandid = @BrandId, modelid = @ModelId, typeoffuelid = @TypeOfFuelId, 
                               isActive = @isActive WHERE id = @Id",carToUpdate);
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("UpdateCar Error", LogState.Error);
             }
         }
         public static void DeleteCar(CarModel carToDelete)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                cnn.Query($"UPDATE Car SET isActive = 0");
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    cnn.Query($"UPDATE Car SET isActive = 0");
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("DeleteCar Error", LogState.Error);
             }
         }
         #endregion
@@ -92,50 +126,72 @@ namespace CarRefuelTracker.UI.DataAccess
         public static List<BrandModel> LoadAllBrands()
         {
             List<BrandModel> allBrands = new List<BrandModel>();
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                allBrands = cnn.Query<BrandModel>("SELECT * FROM Brand").ToList();
-                return allBrands;
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    allBrands = cnn.Query<BrandModel>("SELECT * FROM Brand").ToList();
+                    return allBrands;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("LoadAllBrand Error", LogState.Error);
+                return new List<BrandModel>();
             }
         }
         public static BrandModel AddBrand(BrandModel brand)
         {
-            
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-
-                int isBrandInDatabase = cnn.Query<int>($"SELECT id FROM Brand WHERE brandname = '{brand.BrandName}'").Count();
-
-                if (isBrandInDatabase == 0)
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    brand.Id = cnn.Query<int>(@"INSERT INTO Brand (brandname) VALUES (@BrandName); SELECT last_insert_rowid()", brand).First();
+
+                    int isBrandInDatabase = cnn.Query<int>($"SELECT id FROM Brand WHERE brandname = '{brand.BrandName}'").Count();
+
+                    if (isBrandInDatabase == 0)
+                    {
+                        brand.Id = cnn.Query<int>(@"INSERT INTO Brand (brandname) VALUES (@BrandName); SELECT last_insert_rowid()", brand).First();
+                    }
+                    return brand;
                 }
-                return brand;
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("AddBrand Error", LogState.Error);
+                return new BrandModel();
             }
         }
         public static void RemoveBrandFromDataBase(BrandModel brand)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                cnn.Query($"DELETE FROM Brand WHERE id = {brand.Id}");
-                List<ModelTypeModel> modelTypes = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE brandId = {brand.Id} ").ToList();
-                List<CarModel> carModels = cnn.Query<CarModel>($"SELECT * FROM Car WHERE brandId = {brand.Id}").ToList();
-
-                if (carModels != null && carModels.Count > 0)
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    foreach (CarModel carModel in carModels)
+                    cnn.Query($"DELETE FROM Brand WHERE id = {brand.Id}");
+                    List<ModelTypeModel> modelTypes = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE brandId = {brand.Id} ").ToList();
+                    List<CarModel> carModels = cnn.Query<CarModel>($"SELECT * FROM Car WHERE brandId = {brand.Id}").ToList();
+
+                    if (carModels != null && carModels.Count > 0)
                     {
-                        cnn.Query($"DELETE FROM Car WHERE brandId = {carModel.Id}");
+                        foreach (CarModel carModel in carModels)
+                        {
+                            cnn.Query($"DELETE FROM Car WHERE brandId = {carModel.Id}");
+                        }
+                    }
+
+                    if (modelTypes != null && modelTypes.Count > 0)
+                    {
+                        foreach (ModelTypeModel modelType in modelTypes)
+                        {
+                            cnn.Query($"DELETE FROM Model WHERE id = {modelType.Id}");
+                        }
                     }
                 }
-
-                if (modelTypes != null && modelTypes.Count > 0)
-                {
-                    foreach (ModelTypeModel modelType in modelTypes)
-                    {
-                        cnn.Query($"DELETE FROM Model WHERE id = {modelType.Id}");
-                    }
-                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("RemoveBrandFromDatabase Error", LogState.Error);
             }
         }
 
@@ -145,32 +201,55 @@ namespace CarRefuelTracker.UI.DataAccess
         public static List<ModelTypeModel> ModelsFromBrands(int brandId)
         {
             List<ModelTypeModel> carModels = new List<ModelTypeModel>();
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                carModels = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE {brandId} = brandId").ToList();
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    carModels = cnn.Query<ModelTypeModel>($"SELECT * FROM Model WHERE {brandId} = brandId").ToList();
 
-                return carModels;
+                    return carModels;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("ModelsFromBrand Error", LogState.Error);
+                return new List<ModelTypeModel>();
             }
         }
         public static ModelTypeModel AddModel(ModelTypeModel modeltype, BrandModel brandmodel)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                int modelInDatabase = cnn.Query<int>($"SELECT id FROM Model WHERE modelname = '{modeltype.ModelName}'").Count();
-
-                if (modelInDatabase == 0)
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    modeltype.Id = cnn.Query<int>($"INSERT INTO Model (modelname,  brandId) VALUES ('{modeltype.ModelName}', {brandmodel.Id}); SELECT last_insert_rowid()",modeltype).First();
+                    int modelInDatabase = cnn.Query<int>($"SELECT id FROM Model WHERE modelname = '{modeltype.ModelName}'").Count();
+
+                    if (modelInDatabase == 0)
+                    {
+                        modeltype.Id = cnn.Query<int>($"INSERT INTO Model (modelname,  brandId) VALUES ('{modeltype.ModelName}', {brandmodel.Id}); SELECT last_insert_rowid()",modeltype).First();
+                    }
+                    return modeltype;
                 }
-                return modeltype;
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("AddModel Error", LogState.Error);
+                return new ModelTypeModel();
             }
         }
         public static void RemoveModelTypeFromDatabase(ModelTypeModel model)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                cnn.Query($"DELETE FROM Model WHERE id = {model.Id}");
-                cnn.Query($"DELETE FROM Car WHERE modelId = {model.Id}");
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    cnn.Query($"DELETE FROM Model WHERE id = {model.Id}");
+                    cnn.Query($"DELETE FROM Car WHERE modelId = {model.Id}");
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("RemoveModelTypeFromDatabase", LogState.Error);
             }
         }
 
@@ -182,37 +261,58 @@ namespace CarRefuelTracker.UI.DataAccess
         {
             List<FuelTypeModel> fuelTypesList = new List<FuelTypeModel>();
 
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                fuelTypesList = cnn.Query<FuelTypeModel>($"SELECT * FROM TypeOfFuel").ToList();
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    fuelTypesList = cnn.Query<FuelTypeModel>($"SELECT * FROM TypeOfFuel").ToList();
 
-                return fuelTypesList;
+                    return fuelTypesList;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("LoadAllFuelTypes Error", LogState.Error);
+                return new List<FuelTypeModel>();
             }
         }
-
         public static FuelTypeModel AddFuelType(FuelTypeModel fuelType)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                int fueltTypeInDatabase =
-                    cnn.Query<int>($"SELECT id FROM TypeOfFuel WHERE TypeOfFuel = '{fuelType.TypeOfFuel}'").Count();
-                if (fueltTypeInDatabase == 0)
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
-                    fuelType.Id =
-                        cnn.Query<int>($"INSERT INTO TypeOfFuel (TypeOfFuel) VALUES('{fuelType.TypeOfFuel}'); " +
-                                       $"SELECT last_insert_rowid()", fuelType).First();
-                }
+                    int fueltTypeInDatabase =
+                        cnn.Query<int>($"SELECT id FROM TypeOfFuel WHERE TypeOfFuel = '{fuelType.TypeOfFuel}'").Count();
+                    if (fueltTypeInDatabase == 0)
+                    {
+                        fuelType.Id =
+                            cnn.Query<int>($"INSERT INTO TypeOfFuel (TypeOfFuel) VALUES('{fuelType.TypeOfFuel}'); " +
+                                           $"SELECT last_insert_rowid()", fuelType).First();
+                    }
 
-                return fuelType;
+                    return fuelType;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("AddFuelTypeError", LogState.Error);
+                return new FuelTypeModel();
             }
         }
-
         public static void RemoveFuelTypeFromDatabase(FuelTypeModel fuelTypeModel)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                cnn.Query($"DELETE FROM TypeOfFuel WHERE id = {fuelTypeModel.Id}");
-                cnn.Query($"DELETE FROM Car WHERE typeoffuelid = {fuelTypeModel.Id}");
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    cnn.Query($"DELETE FROM TypeOfFuel WHERE id = {fuelTypeModel.Id}");
+                    cnn.Query($"DELETE FROM Car WHERE typeoffuelid = {fuelTypeModel.Id}");
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("RemoveFuelTypeFromDatabase Error", LogState.Error);
             }
         }
 
@@ -223,27 +323,41 @@ namespace CarRefuelTracker.UI.DataAccess
         public static List<EntryModel> LoadEntrysForCar(int carId)
         {
             List<EntryModel> entryModels = new List<EntryModel>();
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                entryModels = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carId}  ORDER BY Date(Replace(entrydate, '.', '-'));").ToList();
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    entryModels = cnn.Query<EntryModel>($"SELECT * FROM `Entry` WHERE CarId = {carId}  ORDER BY Date(Replace(entrydate, '.', '-'));").ToList();
 
-                return entryModels;
+                    return entryModels;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("LoadEntrysForCar Error", LogState.Error);
+                return new List<EntryModel>();
             }
         }
-
         public static EntryModel SaveEntryInDatabase(EntryModel entryToSave)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                entryToSave = cnn.Query<EntryModel>(@"INSERT INTO Entry(carId, entrydate, priceperliter, amountoffuel, drivendistance, totalamount, 
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    entryToSave = cnn.Query<EntryModel>(@"INSERT INTO Entry(carId, entrydate, priceperliter, amountoffuel, drivendistance, totalamount, 
                                                      costperhundredkilometer, consumptationperhundredkilometer) 
                                                      VALUES(@CarId, @EntryDate, @PricePerLiter, 
                                                      @AmountOfFuel, @DrivenDistance, @TotalAmount, @CostPerHundredKilometer, 
                                                      @ConsumptationPerHundredKilometer); SELECT last_insert_rowid()", entryToSave).First();
+                }
+                return entryToSave;
             }
-            return entryToSave;
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("SaveEntryInDatabase Error", LogState.Error);
+                return new EntryModel();
+            }
         }
-
         public static void UpdateEntryInDatabase(EntryModel entryModelToUpdate)
         {
             try
@@ -256,17 +370,23 @@ namespace CarRefuelTracker.UI.DataAccess
                                consumptationperhundredkilometer = @ConsumptationPerHundredKilometer WHERE id = @Id", entryModelToUpdate);
                 }
             }
-            catch (SQLiteException e)
+            catch (SQLiteException ex)
             {
-                Console.WriteLine(e);
+                LogHelper.WriteToLog("UpdateEntryInDatabase Error", LogState.Error);
             }
         }
-
         public static void DeleteEntryFromDatabase(EntryModel entryToDelete)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            try
             {
-                cnn.Query($"DELETE FROM Entry WHERE id = {entryToDelete.Id}");
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    cnn.Query($"DELETE FROM Entry WHERE id = {entryToDelete.Id}");
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                LogHelper.WriteToLog("DeleteEntryFromDatabase Error", LogState.Error);
             }
         }
 

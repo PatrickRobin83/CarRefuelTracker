@@ -13,6 +13,7 @@
 using System;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
 using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
@@ -209,6 +210,7 @@ namespace CarRefuelTracker.UI.ViewModels
 
         public void SaveEntry()
         {
+            LogHelper.WriteToLog("Save entry started", LogState.Debug);
             EntryModel entryModelToSave = new EntryModel();
 
             entryModelToSave.Id = Id;
@@ -231,11 +233,13 @@ namespace CarRefuelTracker.UI.ViewModels
                 SelectedEntryModel = entryModelToSave;
             }
             EventAggregationProvider.EventAggregator.PublishOnUIThread(SelectedEntryModel);
+            LogHelper.WriteToLog("Entry saved", LogState.Debug);
             TryClose();
         }
 
         public void CancelEntryDetailsView()
         {
+            LogHelper.WriteToLog("Entry creation aborted, no entry created", LogState.Debug);
             EventAggregationProvider.EventAggregator.PublishOnUIThread(new EntryModel());
             TryClose();
         }

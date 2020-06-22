@@ -16,6 +16,8 @@ using System.Threading;
 using System.Windows;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
@@ -178,6 +180,7 @@ namespace CarRefuelTracker.UI.ViewModels
             settings.Title = "Eintrag hinzufügen";
             settings.ResizeMode = ResizeMode.NoResize;
             settings.ShowInTaskbar = false;
+            LogHelper.WriteToLog("AddEntryView opened", LogState.Debug);
             wm.ShowDialog(addEntryDialog, null, settings);
         }
         public void EditEntry()
@@ -189,6 +192,7 @@ namespace CarRefuelTracker.UI.ViewModels
             settings.Title = "Eintrag editieren";
             settings.ResizeMode = ResizeMode.NoResize;
             settings.ShowInTaskbar = false;
+            LogHelper.WriteToLog("EditEntryView opened", LogState.Debug);
             wm.ShowDialog(editEntryDialog, null, settings);
         }
 
@@ -198,6 +202,7 @@ namespace CarRefuelTracker.UI.ViewModels
             CarEntrys = new ObservableCollection<EntryModel>(SqliteDataAccess.LoadEntrysForCar(CarModel.Id));
             CarModel.Entries = CarEntrys;
             CalculateAverages();
+            LogHelper.WriteToLog("Entry deleted", LogState.Debug);
         }
 
         public void CalculateAverages()
@@ -272,8 +277,8 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 AverageCosts = "0";
             }
-
             #endregion
+            LogHelper.WriteToLog("Averages calculated", LogState.Debug);
         }
         #endregion
 

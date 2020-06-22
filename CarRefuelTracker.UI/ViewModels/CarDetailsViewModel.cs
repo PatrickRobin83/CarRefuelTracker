@@ -17,6 +17,8 @@ using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
@@ -192,23 +194,24 @@ namespace CarRefuelTracker.UI.ViewModels
         {
             AvailableBrands = new ObservableCollection<BrandModel>(SqliteDataAccess.LoadAllBrands());
             AvailableFuelTypes = new ObservableCollection<FuelTypeModel>(SqliteDataAccess.LoadAllFuelTypes());
-                Id = CarModel.Id;
-                IsActive = CarModel.IsActive;
-                SelectedBrand = CarModel.Brand;
-                AvailableCarModels = new ObservableCollection<ModelTypeModel>(SqliteDataAccess.ModelsFromBrands(SelectedBrand.Id));
-                SelectedModelType = CarModel.ModelType;
-                SelectedFuelType = CarModel.FuelType;
-                Entries = CarModel.Entries;
-                NotifyOfPropertyChange(() => SelectedBrand);
-                NotifyOfPropertyChange(() => SelectedModelType);
-                NotifyOfPropertyChange(() => SelectedFuelType);
-                NotifyOfPropertyChange(() => AvailableBrands);
-                NotifyOfPropertyChange(() => AvailableCarModels);
-                NotifyOfPropertyChange(() => AvailableFuelTypes);
-
+            Id = CarModel.Id;
+            IsActive = CarModel.IsActive;
+            SelectedBrand = CarModel.Brand;
+            AvailableCarModels = new ObservableCollection<ModelTypeModel>(SqliteDataAccess.ModelsFromBrands(SelectedBrand.Id));
+            SelectedModelType = CarModel.ModelType;
+            SelectedFuelType = CarModel.FuelType;
+            Entries = CarModel.Entries;
+            NotifyOfPropertyChange(() => SelectedBrand);
+            NotifyOfPropertyChange(() => SelectedModelType);
+            NotifyOfPropertyChange(() => SelectedFuelType);
+            NotifyOfPropertyChange(() => AvailableBrands);
+            NotifyOfPropertyChange(() => AvailableCarModels);
+            NotifyOfPropertyChange(() => AvailableFuelTypes);
+            LogHelper.WriteToLog("Car loaded", LogState.Debug);
         }
         public void SaveCar()
         {
+            LogHelper.WriteToLog("Saving Car", LogState.Debug);
             CarModel carToSave = new CarModel();
             carToSave.Id = Id;
             carToSave.IsActive = IsActive;
@@ -229,6 +232,7 @@ namespace CarRefuelTracker.UI.ViewModels
                 SqliteDataAccess.SaveCar(carToSave);
             }
             EventAggregationProvider.EventAggregator.PublishOnUIThread(carToSave);
+            LogHelper.WriteToLog("Car saved", LogState.Debug);
             TryClose();
         }
         public void AddBrand()
@@ -241,6 +245,7 @@ namespace CarRefuelTracker.UI.ViewModels
             settings.ResizeMode = ResizeMode.NoResize;
             settings.ShowInTaskbar = false;
             vm.ShowDialog(addBrandDialog, null, settings);
+            LogHelper.WriteToLog("AddBrandView opened", LogState.Debug);
         }
 
         public void RemoveBrand()
@@ -251,6 +256,7 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 SelectedBrand = AvailableBrands.First();
             }
+            LogHelper.WriteToLog("Brand deleted", LogState.Debug);
         }
 
         public void AddModelType()
@@ -263,6 +269,7 @@ namespace CarRefuelTracker.UI.ViewModels
             settings.ResizeMode = ResizeMode.NoResize;
             settings.ShowInTaskbar = false;
             vm.ShowDialog(addModelType, null,settings);
+            LogHelper.WriteToLog("AddModelType View opened", LogState.Debug);
         }
 
         public void RemoveModelType()
@@ -270,6 +277,7 @@ namespace CarRefuelTracker.UI.ViewModels
             SqliteDataAccess.RemoveModelTypeFromDatabase(SelectedModelType);
             SelectedBrand = AvailableBrands.First();
             AvailableCarModels = new ObservableCollection<ModelTypeModel>(SqliteDataAccess.ModelsFromBrands(SelectedBrand.Id));
+            LogHelper.WriteToLog("ModelType deleted", LogState.Debug);
         }
 
         public void AddFuelType()
@@ -282,6 +290,7 @@ namespace CarRefuelTracker.UI.ViewModels
             settings.ResizeMode = ResizeMode.NoResize;
             settings.ShowInTaskbar = false;
             vm.ShowDialog(addFuelTypeDialog, null, settings);
+            LogHelper.WriteToLog("FuelTypeView opened", LogState.Debug);
         }
 
         public void RemoveFuelType()
@@ -292,11 +301,13 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 SelectedFuelType = AvailableFuelTypes.First();
             }
+            LogHelper.WriteToLog("FuelType deleted", LogState.Debug);
         }
 
         public void CancelCreateCar()
         {
             EventAggregationProvider.EventAggregator.PublishOnUIThread(new CarModel());
+            LogHelper.WriteToLog("CreateCarView closed, no car created", LogState.Debug);
             TryClose();
         }
 

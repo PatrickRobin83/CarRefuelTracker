@@ -11,6 +11,8 @@
 using System;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
+using CarRefuelTracker.UI.Enums;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
 
 namespace CarRefuelTracker.UI.ViewModels
@@ -84,15 +86,21 @@ namespace CarRefuelTracker.UI.ViewModels
 
         public void Cancel()
         {
+            LogHelper.WriteToLog("Cancel Button clicked, no modelType created", LogState.Debug);
             TryClose();
         }
 
         public void AddModelType()
         {
+            LogHelper.WriteToLog("ModelType creation started", LogState.Debug);
             ModelTypeModel = new ModelTypeModel();
             ModelTypeModel.ModelName = ModelTypeModelName;
             ModelTypeModel = SqliteDataAccess.AddModel(ModelTypeModel, BrandModel);
             EventAggregationProvider.EventAggregator.PublishOnUIThread(ModelTypeModel);
+            if (ModelTypeModel != null && ModelTypeModel.ModelName != "")
+            {
+                LogHelper.WriteToLog("ModelType created", LogState.Info);
+            }
             TryClose();
         }
 
