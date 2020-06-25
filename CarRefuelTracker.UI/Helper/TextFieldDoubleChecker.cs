@@ -39,7 +39,6 @@ namespace CarRefuelTracker.UI.Helper
         /// <returns>Bool if the given string is convertable to an double</returns>
         public static bool CheckIsInputDouble(string inputToCheck)
         {
-            bool isInputBool = false;
             double result = 0;
 
             if (inputToCheck != "")
