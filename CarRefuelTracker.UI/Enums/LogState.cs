@@ -10,6 +10,9 @@
 
 namespace CarRefuelTracker.UI.Enums
 {
+    /// <summary>
+    /// Represents the Log States. Like Debug or Warn or Error. 
+    /// </summary>
     public enum LogState
     {
         Debug,

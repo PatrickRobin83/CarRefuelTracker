@@ -18,8 +18,13 @@ namespace CarRefuelTracker.UI.Models
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// Unique identifier
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// Name of the FuelType
+        /// </summary>
         public string TypeOfFuel { get; set; }
 
         #endregion

@@ -12,6 +12,7 @@
 
 using System.Windows;
 using Caliburn.Micro;
+using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.ViewModels;
 
 namespace CarRefuelTracker.UI
@@ -33,6 +34,7 @@ namespace CarRefuelTracker.UI
         public Bootstrapper()
         {
             Initialize();
+            LogHelper.WriteLogOnStartup();
         }
 
         #endregion
@@ -45,6 +47,5 @@ namespace CarRefuelTracker.UI
         }
 
         #endregion
-
     }
 }

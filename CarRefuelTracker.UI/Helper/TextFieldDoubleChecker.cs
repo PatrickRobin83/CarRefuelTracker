@@ -32,7 +32,11 @@ namespace CarRefuelTracker.UI.Helper
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// checks if the given string is an valid value
+        /// </summary>
+        /// <param name="inputToCheck">string to try to convert</param>
+        /// <returns>Bool if the given string is convertable to an double</returns>
         public static bool CheckIsInputDouble(string inputToCheck)
         {
             bool isInputBool = false;

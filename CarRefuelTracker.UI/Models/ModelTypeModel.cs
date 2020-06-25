@@ -19,8 +19,13 @@ namespace CarRefuelTracker.UI.Models
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// Name of the Car Model like "Corolla" from Toyota
+        /// </summary>
         public string ModelName { get; set; }
+        /// <summary>
+        /// Unique identifier 
+        /// </summary>
         public int Id { get; set; }
 
         #endregion
@@ -30,7 +35,10 @@ namespace CarRefuelTracker.UI.Models
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// Overrides the ToString() Method from object and returns the ModelName
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return ModelName;

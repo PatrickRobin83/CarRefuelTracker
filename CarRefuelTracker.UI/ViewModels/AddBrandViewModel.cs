@@ -7,8 +7,6 @@
 *----------------------------------------------------------------------------------
 * @author Patrick Robin <support@rietrob.de>
 */
-
-using System;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
 using CarRefuelTracker.UI.Enums;
@@ -18,6 +16,9 @@ using CarRefuelTracker.UI.Models;
 namespace CarRefuelTracker.UI.ViewModels
 
 {
+    /// <summary>
+    /// ViewModel for Displaying and add a Brand
+    /// </summary>
     public class AddBrandViewModel : Screen
     {
 
@@ -29,7 +30,9 @@ namespace CarRefuelTracker.UI.ViewModels
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// string from the TexField
+        /// </summary>
         public string BrandName
         {
             get { return brandName;}
@@ -39,7 +42,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => BrandName);
             }
         }
-
+        /// <summary>
+        /// BrandModel to store the value of the TextField in
+        /// </summary>
         public BrandModel Brand
         {
             get
@@ -60,13 +65,18 @@ namespace CarRefuelTracker.UI.ViewModels
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// Button Cancel Executes this Method. Writing a Log Line and Closing the View
+        /// </summary>
         public void Cancel()
         {
             LogHelper.WriteToLog("Cancel Button clicked, no Brand created", LogState.Debug);
             TryClose();
         }
-
+        /// <summary>
+        /// Button AddBrand Executes this Methos. Assign the string from BrandName Textfield to the BrandModel.
+        /// BrandName and save the Brand in the Database. 
+        /// </summary>
         public void AddBrand()
         {
             LogHelper.WriteToLog("Brand creation started", LogState.Debug);

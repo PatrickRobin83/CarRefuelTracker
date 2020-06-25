@@ -8,15 +8,12 @@
 * @author Patrick Robin <support@rietrob.de>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
-using System.Data.Entity.Infrastructure.Design;
 using System.Data.SQLite;
 using System.Linq;
-using Caliburn.Micro;
 using CarRefuelTracker.UI.Enums;
 using CarRefuelTracker.UI.Helper;
 using CarRefuelTracker.UI.Models;
@@ -25,6 +22,9 @@ using Dapper;
 namespace CarRefuelTracker.UI.DataAccess
 
 {
+    /// <summary>
+    /// DataAccess to the database
+    /// </summary>
     public static class SqliteDataAccess
     {
 
@@ -43,6 +43,10 @@ namespace CarRefuelTracker.UI.DataAccess
         #region Methods
 
         #region Car Operations
+        /// <summary>
+        /// Gets all CarModels from the Database and return them in a List
+        /// </summary>
+        /// <returns>List of CarModels</returns>
         public static List<CarModel> LoadCars()
         {
             List<CarModel> allCarModels = new List<CarModel>();
@@ -71,6 +75,11 @@ namespace CarRefuelTracker.UI.DataAccess
             }
             
         }
+        /// <summary>
+        /// Save a CarModel in the DataBase
+        /// </summary>
+        /// <param name="carToSave">CarModel to save in the database</param>
+        /// <returns>The CarModel with the Id from the database</returns>
         public static CarModel SaveCar(CarModel carToSave)
         {
             try
@@ -91,6 +100,10 @@ namespace CarRefuelTracker.UI.DataAccess
 
             
         }
+        /// <summary>
+        /// Updates the given CarModel in the database
+        /// </summary>
+        /// <param name="carToUpdate">CarModel to update</param>
         public static void UpdateCar(CarModel carToUpdate)
         {
             try
@@ -106,6 +119,10 @@ namespace CarRefuelTracker.UI.DataAccess
                 LogHelper.WriteToLog("UpdateCar Error", LogState.Error);
             }
         }
+        /// <summary>
+        /// Delete the given CarModel from the database
+        /// </summary>
+        /// <param name="carToDelete"></param>
         public static void DeleteCar(CarModel carToDelete)
         {
             try
@@ -123,6 +140,10 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region Brand Operations
+        /// <summary>
+        /// Loads all Brands from Database and returns them in a List
+        /// </summary>
+        /// <returns>List of BrandModel</returns>
         public static List<BrandModel> LoadAllBrands()
         {
             List<BrandModel> allBrands = new List<BrandModel>();
@@ -140,6 +161,11 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new List<BrandModel>();
             }
         }
+        /// <summary>
+        /// Add the given BrandModel to the database
+        /// </summary>
+        /// <param name="brand">The BrandModel to save</param>
+        /// <returns>BrandModel with the Id from Database</returns>
         public static BrandModel AddBrand(BrandModel brand)
         {
             try
@@ -162,6 +188,10 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new BrandModel();
             }
         }
+        /// <summary>
+        /// Deletes the given BrandModel from the Database
+        /// </summary>
+        /// <param name="brand">BrandModel to delete from Database</param>
         public static void RemoveBrandFromDataBase(BrandModel brand)
         {
             try
@@ -198,6 +228,11 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region Model Operations
+        /// <summary>
+        /// Loads all Models for the given Brand and returns them in a list
+        /// </summary>
+        /// <param name="brandId">Brand to get the Models from</param>
+        /// <returns>List of ModelTypeModel</returns>
         public static List<ModelTypeModel> ModelsFromBrands(int brandId)
         {
             List<ModelTypeModel> carModels = new List<ModelTypeModel>();
@@ -216,6 +251,12 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new List<ModelTypeModel>();
             }
         }
+        /// <summary>
+        /// Adds the given ModelTypeModel to the Database
+        /// </summary>
+        /// <param name="modeltype">ModelTypeModel to add to the Database</param>
+        /// <param name="brandmodel">BrandModel the ModelType is from</param>
+        /// <returns>The ModelTypeModel with Id from the Database</returns>
         public static ModelTypeModel AddModel(ModelTypeModel modeltype, BrandModel brandmodel)
         {
             try
@@ -237,6 +278,10 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new ModelTypeModel();
             }
         }
+        /// <summary>
+        /// Removes the given ModelTypeModel from the Database
+        /// </summary>
+        /// <param name="model">ModelTypeModel do remove</param>
         public static void RemoveModelTypeFromDatabase(ModelTypeModel model)
         {
             try
@@ -257,6 +302,10 @@ namespace CarRefuelTracker.UI.DataAccess
 
         #region FuelType Operations
 
+        /// <summary>
+        /// Loads all FuelTypeModels from Database an return them in a list
+        /// </summary>
+        /// <returns>List of FuelTypeModel</returns>
         public static List<FuelTypeModel> LoadAllFuelTypes()
         {
             List<FuelTypeModel> fuelTypesList = new List<FuelTypeModel>();
@@ -276,6 +325,11 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new List<FuelTypeModel>();
             }
         }
+        /// <summary>
+        /// Adds a FuelTypeModel to the Database
+        /// </summary>
+        /// <param name="fuelType">FuelTypeModel to add</param>
+        /// <returns>FuelTypeModel with Id from Database</returns>
         public static FuelTypeModel AddFuelType(FuelTypeModel fuelType)
         {
             try
@@ -300,6 +354,10 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new FuelTypeModel();
             }
         }
+        /// <summary>
+        /// Removes the given FuelTypeModel from the Database and also all cars with the deleted FuelType
+        /// </summary>
+        /// <param name="fuelTypeModel">FuelTypeModel to delete</param>
         public static void RemoveFuelTypeFromDatabase(FuelTypeModel fuelTypeModel)
         {
             try
@@ -319,7 +377,11 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region Entry Operations
-
+        /// <summary>
+        /// Loads all Entrys from the given car id
+        /// </summary>
+        /// <param name="carId">CarId where the entrys from</param>
+        /// <returns>List of EntryModel for the given Car</returns>
         public static List<EntryModel> LoadEntrysForCar(int carId)
         {
             List<EntryModel> entryModels = new List<EntryModel>();
@@ -338,6 +400,11 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new List<EntryModel>();
             }
         }
+        /// <summary>
+        /// Saves an EntryModel in the Database
+        /// </summary>
+        /// <param name="entryToSave">EntryModel to Save</param>
+        /// <returns>EntryModel with Id from Database</returns>
         public static EntryModel SaveEntryInDatabase(EntryModel entryToSave)
         {
             try
@@ -358,6 +425,10 @@ namespace CarRefuelTracker.UI.DataAccess
                 return new EntryModel();
             }
         }
+        /// <summary>
+        /// Updates the given EntryModel in the Database
+        /// </summary>
+        /// <param name="entryModelToUpdate">Entry to update</param>
         public static void UpdateEntryInDatabase(EntryModel entryModelToUpdate)
         {
             try
@@ -375,6 +446,10 @@ namespace CarRefuelTracker.UI.DataAccess
                 LogHelper.WriteToLog("UpdateEntryInDatabase Error", LogState.Error);
             }
         }
+        /// <summary>
+        /// Deletes the given EntryModel from Database
+        /// </summary>
+        /// <param name="entryToDelete">EntryModel to remove</param>
         public static void DeleteEntryFromDatabase(EntryModel entryToDelete)
         {
             try
@@ -393,7 +468,11 @@ namespace CarRefuelTracker.UI.DataAccess
         #endregion
 
         #region private Methods
-
+        /// <summary>
+        /// Reads the Connection String from the App.config
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>The Connection String from App.config</returns>
         private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
