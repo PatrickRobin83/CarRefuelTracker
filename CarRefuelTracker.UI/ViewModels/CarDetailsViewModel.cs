@@ -8,13 +8,11 @@
 * @author Patrick Robin <support@rietrob.de>
 */
 
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using Caliburn.Micro;
 using CarRefuelTracker.UI.DataAccess;
 using CarRefuelTracker.UI.Enums;
@@ -27,7 +25,6 @@ namespace CarRefuelTracker.UI.ViewModels
     public class CarDetailsViewModel : Conductor<object>.Collection.OneActive, 
                                       IHandle<BrandModel>, IHandle<ModelTypeModel>, IHandle<FuelTypeModel>
     {
-
         #region Fields
 
         private CarModel carModel;
@@ -45,8 +42,10 @@ namespace CarRefuelTracker.UI.ViewModels
         private IDataErrorInfo dataErrorInfoImplementation;
 
         #endregion
-
         #region Properties
+        /// <summary>
+        /// The CarModel that holds the data from the TextBoxes
+        /// </summary>
         public CarModel CarModel
         {
             get
@@ -59,6 +58,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(CarModel));
             }
         }
+        /// <summary>
+        /// Unique Id from Database
+        /// </summary>
         public int Id
         {
             get { return id; }
@@ -68,6 +70,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(Id));
             }
         }
+        /// <summary>
+        /// Indicator for is the CarModel an active one
+        /// </summary>
         public bool IsActive
         {
             get
@@ -80,6 +85,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(IsActive));
             }
         }
+        /// <summary>
+        /// The BrandModel which is selected in the associated ComboBox
+        /// </summary>
         public BrandModel SelectedBrand
         {
             get
@@ -97,6 +105,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AvailableCarModels);
             }
         }
+        /// <summary>
+        /// The ModelTypeModel which is selected in the associated ComboBox
+        /// </summary>
         public ModelTypeModel SelectedModelType
         {
             get { return selectedModelType; }
@@ -106,6 +117,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(SelectedModelType));
             }
         }
+        /// <summary>
+        /// The FuelTypeModel which is selected in the associated ComboBox
+        /// </summary>
         public FuelTypeModel SelectedFuelType
         {
             get { return selectedFuelType; }
@@ -115,6 +129,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(SelectedFuelType));
             }
         }
+        /// <summary>
+        /// List of all EntryModels for the selected CarModel
+        /// </summary>
         public ObservableCollection<EntryModel> Entries
         {
             get { return entries; }
@@ -124,6 +141,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(Entries));
             }
         }
+        /// <summary>
+        /// List of all available Brands in Database. Datasource for the associated ComboBox
+        /// </summary>
         public ObservableCollection<BrandModel> AvailableBrands
         {
             get { return availableBrands; }
@@ -134,6 +154,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => AvailableCarModels);
             }
         }
+        /// <summary>
+        /// List of all available ModelTypeModels in the Database. Datasource for the associated ComboBox
+        /// </summary>
         public ObservableCollection<ModelTypeModel> AvailableCarModels
         {
             get { return availableCarModels; }
@@ -143,6 +166,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(nameof(AvailableCarModels));
             }
         }
+        /// <summary>
+        /// List of all available FuelTypes in the Database. Datasource for the associated ComboBox
+        /// </summary>
         public ObservableCollection<FuelTypeModel> AvailableFuelTypes
         {
             get { return availableFuelTypes; }
@@ -154,9 +180,30 @@ namespace CarRefuelTracker.UI.ViewModels
         }
 
         #endregion
-
         #region Constructor
+        /// <summary>
+        /// Constructor without a given CarModel. Set all Values to Default 
+        /// </summary>
         public CarDetailsViewModel()
+        {
+            InitializeCarDetailsView();
+        }
+        /// <summary>
+        /// Initializes the CarViewModel with the given CarModel 
+        /// </summary>
+        /// <param name="carModel">Data for the UserControls in the View</param>
+        public CarDetailsViewModel(CarModel carModel)
+        {
+            CarModel = carModel;
+            DataToControls();
+            EventAggregationProvider.EventAggregator.Subscribe(this);
+        }
+        #endregion
+        #region Methods
+        /// <summary>
+        /// Assigns all values to default after the default Constructor is called.
+        /// </summary>
+        private void InitializeCarDetailsView()
         {
             carModel = new CarModel();
             AvailableFuelTypes = new ObservableCollection<FuelTypeModel>(SqliteDataAccess.LoadAllFuelTypes());
@@ -176,20 +223,13 @@ namespace CarRefuelTracker.UI.ViewModels
             {
                 SelectedFuelType = AvailableFuelTypes.First();
             }
-            
+
             IsActive = true;
             EventAggregationProvider.EventAggregator.Subscribe(this);
         }
-        public CarDetailsViewModel(CarModel carModel)
-        {
-            CarModel = carModel;
-            DataToControls();
-            EventAggregationProvider.EventAggregator.Subscribe(this);
-        }
-        #endregion
-
-        #region Methods
-
+        /// <summary>
+        /// Initializes the the Details with the data from the given CarModel ou of the Constructor
+        /// </summary>
         private void DataToControls()
         {
             AvailableBrands = new ObservableCollection<BrandModel>(SqliteDataAccess.LoadAllBrands());
@@ -209,6 +249,11 @@ namespace CarRefuelTracker.UI.ViewModels
             NotifyOfPropertyChange(() => AvailableFuelTypes);
             LogHelper.WriteToLog("Car loaded", LogState.Debug);
         }
+        /// <summary>
+        /// Is executed by trigger the SaveCarButton
+        /// Writes the event into the LogFile, assign the values to the Properties of the Model.
+        /// Save the Model to Database and write the event into the logFile
+        /// </summary>
         public void SaveCar()
         {
             LogHelper.WriteToLog("Saving Car", LogState.Debug);
@@ -235,6 +280,9 @@ namespace CarRefuelTracker.UI.ViewModels
             LogHelper.WriteToLog("Car saved", LogState.Debug);
             TryClose();
         }
+        /// <summary>
+        /// Is executed by trigger the AddBrand Button. Shows the Dialogwindow to add a Brand to the Database
+        /// </summary>
         public void AddBrand()
         {
             var addBrandDialog = new AddBrandViewModel();
@@ -247,7 +295,9 @@ namespace CarRefuelTracker.UI.ViewModels
             vm.ShowDialog(addBrandDialog, null, settings);
             LogHelper.WriteToLog("AddBrandView opened", LogState.Debug);
         }
-
+        /// <summary>
+        ///  Is executed by trigger the RemoveBrand Button. Deletes the Brand from Database.
+        /// </summary>
         public void RemoveBrand()
         {
             SqliteDataAccess.RemoveBrandFromDataBase(SelectedBrand);
@@ -258,7 +308,9 @@ namespace CarRefuelTracker.UI.ViewModels
             }
             LogHelper.WriteToLog("Brand deleted", LogState.Debug);
         }
-
+        /// <summary>
+        ///  Is executed by trigger the AddModel Button. Shows the Dialogwindow to add a Model to the Database
+        /// </summary>
         public void AddModelType()
         {
             var addModelType = new AddModelTypeViewModel(SelectedBrand);
@@ -271,7 +323,9 @@ namespace CarRefuelTracker.UI.ViewModels
             vm.ShowDialog(addModelType, null,settings);
             LogHelper.WriteToLog("AddModelType View opened", LogState.Debug);
         }
-
+        /// <summary>
+        ///  Is executed by trigger the RemoveBrand Button. Removes the Brand from Database
+        /// </summary>
         public void RemoveModelType()
         {
             SqliteDataAccess.RemoveModelTypeFromDatabase(SelectedModelType);
@@ -279,7 +333,9 @@ namespace CarRefuelTracker.UI.ViewModels
             AvailableCarModels = new ObservableCollection<ModelTypeModel>(SqliteDataAccess.ModelsFromBrands(SelectedBrand.Id));
             LogHelper.WriteToLog("ModelType deleted", LogState.Debug);
         }
-
+        /// <summary>
+        ///  Is executed by trigger the AddFuelType Button. Shows the Dialogwindow to add a FuelType to the Database
+        /// </summary>
         public void AddFuelType()
         {
             var addFuelTypeDialog = new AddFuelTypeViewModel();
@@ -292,7 +348,9 @@ namespace CarRefuelTracker.UI.ViewModels
             vm.ShowDialog(addFuelTypeDialog, null, settings);
             LogHelper.WriteToLog("FuelTypeView opened", LogState.Debug);
         }
-
+        /// <summary>
+        ///  Is executed by trigger the RemoveFuelType Button. Deletes the FuelType from Database
+        /// </summary>
         public void RemoveFuelType()
         {
             SqliteDataAccess.RemoveFuelTypeFromDatabase(SelectedFuelType);
@@ -303,7 +361,9 @@ namespace CarRefuelTracker.UI.ViewModels
             }
             LogHelper.WriteToLog("FuelType deleted", LogState.Debug);
         }
-
+        /// <summary>
+        /// Is executed by trigger the CancelButton. Closes the CarDetailsView
+        /// </summary>
         public void CancelCreateCar()
         {
             EventAggregationProvider.EventAggregator.PublishOnUIThread(new CarModel());
@@ -313,7 +373,6 @@ namespace CarRefuelTracker.UI.ViewModels
 
 
         #endregion
-
         #region EventHandler
 
         #region Implementation of IHandle<BrandModel>
@@ -353,7 +412,5 @@ namespace CarRefuelTracker.UI.ViewModels
         #endregion
 
         #endregion
-
-        
     }
 }

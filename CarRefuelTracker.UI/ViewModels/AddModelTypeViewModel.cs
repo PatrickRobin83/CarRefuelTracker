@@ -18,6 +18,9 @@ using CarRefuelTracker.UI.Models;
 namespace CarRefuelTracker.UI.ViewModels
 
 {
+    /// <summary>
+    /// AddModelTypeViewModel for representing the AddModelTypView
+    /// </summary>
     public class AddModelTypeViewModel : Screen
     {
 
@@ -30,6 +33,9 @@ namespace CarRefuelTracker.UI.ViewModels
 
         #region Properties
 
+        /// <summary>
+        /// BrandModel to aasign the ModelType to
+        /// </summary>
         public BrandModel BrandModel
         {
             get
@@ -43,7 +49,9 @@ namespace CarRefuelTracker.UI.ViewModels
 
             }
         }
-
+        /// <summary>
+        /// ModelType Name string from the TextBox
+        /// </summary>
         public string ModelTypeModelName
         {
             get
@@ -56,7 +64,9 @@ namespace CarRefuelTracker.UI.ViewModels
                 NotifyOfPropertyChange(() => ModelTypeModelName);
             }
         }
-
+        /// <summary>
+        /// ModelTypeModel thats provide the data to store in database
+        /// </summary>
         public ModelTypeModel ModelTypeModel
         {
             get
@@ -73,7 +83,10 @@ namespace CarRefuelTracker.UI.ViewModels
         #endregion
 
         #region Constructor
-
+        /// <summary>
+        /// Default Constructor with one parameter to inject.
+        /// </summary>
+        /// <param name="brandModel">BrandModel is needed for the BrandModel.Id to aasign the ModelTypeModel to</param>
         public AddModelTypeViewModel(BrandModel brandModel)
         {
             BrandModel = brandModel;
@@ -83,13 +96,18 @@ namespace CarRefuelTracker.UI.ViewModels
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// This Method executes by using the Cancel Button. This Methods writes a LogMessage into the LogFile and closes the Add ModelTapeModel
+        /// </summary>
         public void Cancel()
         {
             LogHelper.WriteToLog("Cancel Button clicked, no modelType created", LogState.Debug);
             TryClose();
         }
-
+        /// <summary>
+        /// This Methods executes after AddModel Button triggers. It writes a logmessage and adds the ModelType to the Database.
+        /// After adding the ModelType to database closes the AddModelView
+        /// </summary>
         public void AddModelType()
         {
             LogHelper.WriteToLog("ModelType creation started", LogState.Debug);
