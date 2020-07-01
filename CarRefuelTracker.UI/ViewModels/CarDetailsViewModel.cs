@@ -42,6 +42,7 @@ namespace CarRefuelTracker.UI.ViewModels
         private IDataErrorInfo dataErrorInfoImplementation;
 
         #endregion
+
         #region Properties
         /// <summary>
         /// The CarModel that holds the data from the TextBoxes
@@ -180,6 +181,7 @@ namespace CarRefuelTracker.UI.ViewModels
         }
 
         #endregion
+
         #region Constructor
         /// <summary>
         /// Constructor without a given CarModel. Set all Values to Default 
@@ -199,6 +201,7 @@ namespace CarRefuelTracker.UI.ViewModels
             EventAggregationProvider.EventAggregator.Subscribe(this);
         }
         #endregion
+
         #region Methods
         /// <summary>
         /// Assigns all values to default after the default Constructor is called.
@@ -373,6 +376,7 @@ namespace CarRefuelTracker.UI.ViewModels
 
 
         #endregion
+
         #region EventHandler
 
         #region Implementation of IHandle<BrandModel>

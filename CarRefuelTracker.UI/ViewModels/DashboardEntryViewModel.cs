@@ -193,7 +193,6 @@ namespace CarRefuelTracker.UI.ViewModels
             LogHelper.WriteToLog("EditEntryView opened", LogState.Debug);
             wm.ShowDialog(editEntryDialog, null, settings);
         }
-
         public void DeleteEntry()
         {
             SqliteDataAccess.DeleteEntryFromDatabase(SelectedEntryModel);
@@ -202,7 +201,6 @@ namespace CarRefuelTracker.UI.ViewModels
             CalculateAverages();
             LogHelper.WriteToLog("Entry deleted", LogState.Debug);
         }
-
         public void CalculateAverages()
         {
             double tmpPricePerLiter = 0;

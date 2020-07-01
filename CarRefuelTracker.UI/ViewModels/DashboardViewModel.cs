@@ -171,18 +171,27 @@ namespace CarRefuelTracker.UI.ViewModels
         {
             SelectedCarEntryViewModel = new DashboardEntryViewModel(SelectedCarModel);
         }
+        /// <summary>
+        /// Opens the CarDetailsView with the values from the selected car filled in the form
+        /// </summary>
         public void EditCar()
         {
             CarDetailsViewModel = new CarDetailsViewModel(SelectedCarModel);
             SelectedCreateCarViewModelIsVisible = true;
             LogHelper.WriteToLog("EditCar Button clicked",LogState.Debug);
         }
+        /// <summary>
+        /// Deletes the selected car from Database
+        /// </summary>
         public void DeleteCar()
         {
             SqliteDataAccess.DeleteCar(SelectedCarModel);
             NotifyOfPropertyChange(() => AvailableCars);
             LogHelper.WriteToLog($"Car {SelectedCarModel.Brand} {SelectedCarModel.ModelType} was deleted", LogState.Info);
         }
+        /// <summary>
+        /// Opens the CarDetailsView with an empty  form
+        /// </summary>
         public void CreateNewCar()
         {
             SelectedCarModel = null;
@@ -190,6 +199,9 @@ namespace CarRefuelTracker.UI.ViewModels
             SelectedCreateCarViewModelIsVisible = true;
             LogHelper.WriteToLog("CreateNewCarButton clicked", LogState.Debug);
         }
+        /// <summary>
+        /// Close the Application and writes the Event into the log file
+        /// </summary>
         public void Exit()
         {
             LogHelper.WriteToLog("Application Exited", LogState.Info);
@@ -197,7 +209,6 @@ namespace CarRefuelTracker.UI.ViewModels
         }
 
         #region Implementation of IHandle<CarModel>
-
         public void Handle(CarModel carModel)
         {
             if (carModel != null)
